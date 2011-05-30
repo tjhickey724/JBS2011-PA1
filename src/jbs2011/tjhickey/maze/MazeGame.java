@@ -45,7 +45,7 @@ public class MazeGame {
 	  // here we add up to 20 jewels to the board
 	  for (int i=0;i<Math.min(20,w*d);i++){
 		  MazePosition q = getEmptySpace();
-		  System.out.println("adding a jewel at position "+q);
+		  if (debugging) System.out.println("adding a jewel at position "+q);
 		  jewelPosition.add(q);
 	  }
 
@@ -91,7 +91,7 @@ public class MazeGame {
 		  }
 		  
 		  // mark that old space as "free space"
-		  freeSpace.add(oldPos);
+		  freeSpace.add(0,oldPos);
 		  
 		  // check to see if there is a jewel in the new position.
 		  int i = jewelPosition.indexOf(newPos);
@@ -139,23 +139,28 @@ public class MazeGame {
    * and prints out the results in a table
    */
   public static void playTournament() {
+	  System.out.println("Playing tournament!");
 	  ArrayList<MazePlayer> players = new ArrayList<MazePlayer>();
-	  players.add(new RandomPlayer("rand1"));
-	  players.add(new RandomPlayer("rand2"));
+	  players.add(new TimPlayer1("tim1"));
+	  players.add(new TimPlayer1("tim2"));
 	  players.add(new RandomPlayer("rand3"));
 	  int[][] winners = new int[3][3];
 	  for (MazePlayer p1:players)
 		  for (MazePlayer p2:players)
+		   if (!p1.equals(p2))
 		    for (int k=0;k<100;k++){
 			  MazeGame g = new MazeGame(10,5);
 			  g.addPlayer(p1);
 			  g.addPlayer(p2);
-			  for(int i=0;i<1000;i++)
+
+			  for(int i=0;i<1000;i++){
 				    for (MazePlayer p: g.player.values()){
 						  Direction d = p.nextMove(g.playerPosition,g.jewelPosition,g.theBoard);
 						  g.movePlayer(p,d);
 					    }
+			  }
 			  int scoreDiff = g.score.get(p1.name)-g.score.get(p2.name);
+			  System.out.println(p1.name+" vs "+p2.name+" = "+scoreDiff);
 			  if (scoreDiff>0){
 				  winners[players.indexOf(p1)][players.indexOf(p2)] += 1;
 			  }
@@ -163,6 +168,7 @@ public class MazeGame {
 				  winners[players.indexOf(p2)][players.indexOf(p1)] += 1;			  
 			  }
 		  }
+	  System.out.println("Results");
 	  for (int i=0;i<players.size();i++){
 		  int sum=0;
 		  for(int j=0;j<players.size();j++){
@@ -179,9 +185,9 @@ public class MazeGame {
 	  MazePlayer p1 = new TimPlayer1("goN");
 	  MazePlayer p2 = new RandomPlayer("rand1");
 	  MazePlayer p3 = new RandomPlayer("rand2");
-	 // g.addPlayer(p1);
+	  g.addPlayer(p1);
 	  g.addPlayer(p2);
-	  g.addPlayer(p3);
+//	  g.addPlayer(p3);
 	 // for(int i=0;i<10;i++) g.addPlayer(new RandomPlayer("newrand"+i));
 	  for (int i=0;i<100;i++){
 		if (g.debugging) System.out.println("\n\n************\nround "+i);

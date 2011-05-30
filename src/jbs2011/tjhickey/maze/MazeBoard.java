@@ -9,6 +9,14 @@ public class MazeBoard implements MazeView {
   public int width, depth;
   MazeCell[][] board;
   
+  public int getWidth(){
+	  return width;
+  }
+  
+  public int getDepth(){
+	  return depth;
+  }
+  
   public static void main(String[] args){
 	  MazeBoard b = new MazeBoard(15,5);
 	  System.out.println("the maze is below\n\n");
