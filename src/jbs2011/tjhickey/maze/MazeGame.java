@@ -20,6 +20,7 @@ public class MazeGame {
   public ArrayList<MazePosition> jewelPosition;
   public ArrayList<MazePosition> freeSpace;
   public MazeBoard theBoard;
+  private boolean debugging = false;
   
   /**
    * This creates a maze of the specified size and adds up to 10 jewels to the board.
@@ -73,20 +74,20 @@ public class MazeGame {
 		  // and if there is someone there then just return without moving
 		  if (playerPosition.containsValue(newPos)){
 			  if (!newPos.equals(oldPos))
-				  System.out.println("player "+p.name+" tried to move into an occupied space.");
+				  if (debugging) System.out.println("player "+p.name+" tried to move into an occupied space.");
 			  else
-				  System.out.println(p.name+" stays at "+oldPos);
+				  if (debugging) System.out.println(p.name+" stays at "+oldPos);
 			  return false;
 		  }
 		  
 		  //otherwise, make the move
 		  playerPosition.put(p.name,newPos);
-		  System.out.println(p.name+": "+oldPos+" -> "+newPos);
+		  if (debugging) System.out.println(p.name+": "+oldPos+" -> "+newPos);
 		  
 		  //take off points if you moved through a wall
 		  if (!theBoard.canMove(oldPos,d)){
 			  score.put(p.name,score.get(p.name)-2);
-			  System.out.println(p.name+" moved through a wall");
+			  if (debugging) System.out.println(p.name+" moved through a wall");
 		  }
 		  
 		  // mark that old space as "free space"
@@ -99,11 +100,11 @@ public class MazeGame {
 			  score.put(p.name,score.get(p.name)+5);
 			  // remove the jewel
 			  jewelPosition.remove(i);
-			  System.out.println("and lands on a jewel!, score is now " +score.get(p.name));
+			  if (debugging) System.out.println("and lands on a jewel!, score is now " +score.get(p.name));
 			  // add another jewel
 			  MazePosition q = getEmptySpace();
 			  jewelPosition.add(q);
-			  System.out.println("adding a new jewel at "+q);
+			  if (debugging) System.out.println("adding a new jewel at "+q);
 			  
 		  }
 		  else {
@@ -119,7 +120,7 @@ public class MazeGame {
      score.put(p.name,0);
      MazePosition q = getEmptySpace();
      playerPosition.put(p.name, q);
-     System.out.println("added player "+p.name+" to the board at position "+q);
+     if (debugging) System.out.println("added player "+p.name+" to the board at position "+q);
   }
   
   public void addJewel() {
@@ -133,8 +134,47 @@ public class MazeGame {
 	  return p;
   }
   
+  /**
+   * This method plays a round-robin tournament against a set of players
+   * and prints out the results in a table
+   */
+  public static void playTournament() {
+	  ArrayList<MazePlayer> players = new ArrayList<MazePlayer>();
+	  players.add(new RandomPlayer("rand1"));
+	  players.add(new RandomPlayer("rand2"));
+	  players.add(new RandomPlayer("rand3"));
+	  int[][] winners = new int[3][3];
+	  for (MazePlayer p1:players)
+		  for (MazePlayer p2:players)
+		    for (int k=0;k<100;k++){
+			  MazeGame g = new MazeGame(10,5);
+			  g.addPlayer(p1);
+			  g.addPlayer(p2);
+			  for(int i=0;i<1000;i++)
+				    for (MazePlayer p: g.player.values()){
+						  Direction d = p.nextMove(g.playerPosition,g.jewelPosition,g.theBoard);
+						  g.movePlayer(p,d);
+					    }
+			  int scoreDiff = g.score.get(p1.name)-g.score.get(p2.name);
+			  if (scoreDiff>0){
+				  winners[players.indexOf(p1)][players.indexOf(p2)] += 1;
+			  }
+			  else {
+				  winners[players.indexOf(p2)][players.indexOf(p1)] += 1;			  
+			  }
+		  }
+	  for (int i=0;i<players.size();i++){
+		  int sum=0;
+		  for(int j=0;j<players.size();j++){
+			  sum += winners[i][j];
+			  System.out.print("\t"+winners[i][j]);
+		  }
+		  System.out.println("\t"+sum);
+	  }
+  }
+  
   public static void main(String[] args) {
-	  MazeGame g = new MazeGame(10,10);
+	  MazeGame g = new MazeGame(10,5);
 	  System.out.println("The board is\n"+g.theBoard);
 	  MazePlayer p1 = new TimPlayer1("goN");
 	  MazePlayer p2 = new RandomPlayer("rand1");
@@ -144,11 +184,11 @@ public class MazeGame {
 	  g.addPlayer(p3);
 	 // for(int i=0;i<10;i++) g.addPlayer(new RandomPlayer("newrand"+i));
 	  for (int i=0;i<100;i++){
-		System.out.println("\n\n************\nround "+i);
-		System.out.println(g.theBoard.drawBoard(g.playerPosition,g.jewelPosition));
+		if (g.debugging) System.out.println("\n\n************\nround "+i);
+		if (g.debugging) System.out.println(g.theBoard.drawBoard(g.playerPosition,g.jewelPosition));
 	    for (MazePlayer p: g.player.values()){
 		  Direction d = p.nextMove(g.playerPosition,g.jewelPosition,g.theBoard);
-//		  System.out.println("Trying to move player "+p.name+" in direction "+d);
+//		  if (g.debugging) System.out.println("Trying to move player "+p.name+" in direction "+d);
 		  g.movePlayer(p,d);
 	    }
 	  }
@@ -156,6 +196,7 @@ public class MazeGame {
 	  System.out.println("Final Scores");
 	  for(String p: g.score.keySet())
 		  System.out.println(p + ": "+g.score.get(p));
+	  playTournament();
   }
   
   

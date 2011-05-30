@@ -93,6 +93,9 @@ public class MazeBoard implements MazeView {
 	  return new MazeWall(Math.random() < MazeBoard.edginess);
   }
   
+  /**
+   * this draws the maze board
+   */
   public String toString() {
 	  StringBuffer buf = new StringBuffer();
 	  System.out.println("printing!!");
@@ -144,7 +147,12 @@ public class MazeBoard implements MazeView {
 	  return buf.toString();
   }
   
-  
+  /**
+   * This draws the board and also draws the Players and the Jewels
+   * @param playerPosition
+   * @param jewelPosition
+   * @return
+   */
   public String drawBoard(
 		  HashMap<String,MazePosition> playerPosition, 
 		  ArrayList<MazePosition> jewelPosition) {
