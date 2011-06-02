@@ -141,8 +141,7 @@ public class MazeGame {
   public static void playTournament() {
 	  System.out.println("Playing tournament!");
 	  ArrayList<MazePlayer> players = new ArrayList<MazePlayer>();
-	  players.add(new TimPlayer1("tim1"));
-	  players.add(new TimPlayer1("tim2"));
+	  players.add(new RandomPlayer("tim1"));
 	  players.add(new RandomPlayer("rand3"));
 	  int[][] winners = new int[3][3];
 	  for (MazePlayer p1:players)
@@ -182,7 +181,7 @@ public class MazeGame {
   public static void main(String[] args) {
 	  MazeGame g = new MazeGame(10,5);
 	  System.out.println("The board is\n"+g.theBoard);
-	  MazePlayer p1 = new TimPlayer1("goN");
+	  MazePlayer p1 = new RandomPlayer("goN");
 	  MazePlayer p2 = new RandomPlayer("rand1");
 	  MazePlayer p3 = new RandomPlayer("rand2");
 	  g.addPlayer(p1);
