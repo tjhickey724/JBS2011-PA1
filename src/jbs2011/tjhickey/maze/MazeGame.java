@@ -1,5 +1,7 @@
 package jbs2011.tjhickey.maze;
 
+
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Collections;
@@ -138,11 +140,9 @@ public class MazeGame {
    * This method plays a round-robin tournament against a set of players
    * and prints out the results in a table
    */
-  public static void playTournament() {
+  public static void playTournament(ArrayList<MazePlayer> players) {
 	  System.out.println("Playing tournament!");
-	  ArrayList<MazePlayer> players = new ArrayList<MazePlayer>();
-	  players.add(new RandomPlayer("tim1"));
-	  players.add(new RandomPlayer("rand3"));
+
 	  int[][] winners = new int[3][3];
 	  for (MazePlayer p1:players)
 		  for (MazePlayer p2:players)
@@ -201,7 +201,11 @@ public class MazeGame {
 	  System.out.println("Final Scores");
 	  for(String p: g.score.keySet())
 		  System.out.println(p + ": "+g.score.get(p));
-	  playTournament();
+	  
+	  ArrayList<MazePlayer> players = new ArrayList<MazePlayer>();
+	  players.add(new jbs2011.tjhickey724.maze.TJHplayer("tim1"));
+	  players.add(new RandomPlayer("rand3"));
+	  playTournament( players);
   }
   
   
