@@ -204,7 +204,8 @@ public class MazeGame {
 	  
 	  ArrayList<MazePlayer> players = new ArrayList<MazePlayer>();
 	  players.add(new jbs2011.tjhickey724.maze.TJHplayer("tim1"));
-	  players.add(new RandomPlayer("rand3"));
+	  players.add(new RandomPlayer("rand2"));
+	  players.add(new jbs2011.sahar.maze.SaharPlayer("sahar3"));
 	  playTournament( players);
   }
   
