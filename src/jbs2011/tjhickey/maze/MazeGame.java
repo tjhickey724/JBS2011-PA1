@@ -216,7 +216,7 @@ public class MazeGame {
 	  ArrayList<MazePlayer> players = new ArrayList<MazePlayer>();
 	  players.add(new jbs2011.tjhickey724.maze.TJHplayer("tim1"));
 	  players.add(new RandomPlayer("rand3"));
-//	  playTournament( players);
+	  playTournament( players);
   }
   
   
