@@ -25,7 +25,7 @@ public class MazeGame {
   public ArrayList<MazePosition> jewelPosition;
   public ArrayList<MazePosition> freeSpace;
   public MazeBoard theBoard;
-  private boolean debugging = false;
+  private boolean debugging = true;
   
   /**
    * This creates a maze of the specified size and adds up to 10 jewels to the board.
@@ -155,7 +155,7 @@ public class MazeGame {
 			  g.addPlayer(p1);
 			  g.addPlayer(p2);
 
-			  for(int i=0;i<10;i++){
+			  for(int i=0;i<100;i++){
 				    for (MazePlayer p: g.player.values()){
 						  Direction d = p.nextMove(g.playerPosition,g.jewelPosition,g.theBoard);
 						  g.movePlayer(p,d);
@@ -192,9 +192,9 @@ public class MazeGame {
   public static void main(String[] args) {
 	  MazeGame g = new MazeGame(10,5);
 	  System.out.println("The board is\n"+g.theBoard);
-	  MazePlayer p1 = new RandomPlayer("goN");
+	  MazePlayer p1 = new jbs2011.jsoued.maze.JsouedPlayer("goN");
 	  MazePlayer p2 = new RandomPlayer("rand1");
-	  MazePlayer p3 = new RandomPlayer("rand2");
+	//  MazePlayer p3 = new RandomPlayer("rand2");
 	  g.addPlayer(p1);
 	  g.addPlayer(p2);
 //	  g.addPlayer(p3);
@@ -216,7 +216,7 @@ public class MazeGame {
 	  ArrayList<MazePlayer> players = new ArrayList<MazePlayer>();
 	  players.add(new jbs2011.tjhickey724.maze.TJHplayer("tim1"));
 	  players.add(new RandomPlayer("rand3"));
-	  playTournament( players);
+//	  playTournament( players);
   }
   
   
