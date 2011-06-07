@@ -14,7 +14,7 @@ import java.util.HashMap;
 
 public class TJHplayer extends MazePlayer {
 	
-	public static void main(String[] arrrrrgs){
+	public static void main(String[] args){
 		  ArrayList<MazePlayer> players = new ArrayList<MazePlayer>();
 		  players.add(new jbs2011.tjhickey724.maze.TJHplayer("tim1"));
 		  players.add(new jbs2011.taha.maze.BasicPlayerByTaha("taha-basic"));
@@ -41,6 +41,7 @@ public class TJHplayer extends MazePlayer {
 			   HashMap<String,MazePosition> players,
 			   ArrayList<MazePosition> jewels,
 			   MazeView maze) {
+		  
 		int pick = new Random().nextInt(Direction.values().length);
 		return Direction.WEST;
 	}
