@@ -5,6 +5,9 @@ package jbs2011.tjhickey.maze;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Collections;
+
+import jbs2011.taha.maze.AdvancedPlayerByTaha;
+import jbs2011.taha.maze.BasicPlayerByTaha;
 /**
  * A Maze Game is played by multiple players that are initially assigned random positions
  * in a maze. The maze also contains some jewels. The goal of the players is to move through
