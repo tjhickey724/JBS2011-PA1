@@ -12,7 +12,7 @@ import java.util.HashMap;
  */
 public abstract class MazePlayer {
 
-   String name;
+   public String name;
    
    public MazePlayer() {
 	   

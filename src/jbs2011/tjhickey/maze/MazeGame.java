@@ -5,6 +5,9 @@ package jbs2011.tjhickey.maze;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Collections;
+
+import jbs2011.taha.maze.AdvancedPlayerByTaha;
+import jbs2011.taha.maze.BasicPlayerByTaha;
 /**
  * A Maze Game is played by multiple players that are initially assigned random positions
  * in a maze. The maze also contains some jewels. The goal of the players is to move through
@@ -22,7 +25,7 @@ public class MazeGame {
   public ArrayList<MazePosition> jewelPosition;
   public ArrayList<MazePosition> freeSpace;
   public MazeBoard theBoard;
-  private boolean debugging = false;
+  private boolean debugging = true;
   
   /**
    * This creates a maze of the specified size and adds up to 10 jewels to the board.
@@ -143,16 +146,16 @@ public class MazeGame {
   public static void playTournament(ArrayList<MazePlayer> players) {
 	  System.out.println("Playing tournament!");
 
-	  int[][] winners = new int[3][3];
+	  int[][] winners = new int[players.size()][players.size()];
 	  for (MazePlayer p1:players)
 		  for (MazePlayer p2:players)
 		   if (!p1.equals(p2))
-		    for (int k=0;k<100;k++){
+		    for (int k=0;k<10;k++){
 			  MazeGame g = new MazeGame(10,5);
 			  g.addPlayer(p1);
 			  g.addPlayer(p2);
 
-			  for(int i=0;i<1000;i++){
+			  for(int i=0;i<100;i++){
 				    for (MazePlayer p: g.player.values()){
 						  Direction d = p.nextMove(g.playerPosition,g.jewelPosition,g.theBoard);
 						  g.movePlayer(p,d);
@@ -174,16 +177,24 @@ public class MazeGame {
 			  sum += winners[i][j];
 			  System.out.print("\t"+winners[i][j]);
 		  }
-		  System.out.println("\t"+sum);
+		  System.out.println("\t"+sum+"\t"+players.get(i).name);
 	  }
+	  for (int j=0;j<players.size();j++){
+		  int losses=0;
+		  for (int i=0;i<players.size();i++) {
+			  losses += winners[i][j];
+		  }
+		  System.out.print("\t"+losses);
+	  }
+	  System.out.println();
   }
   
   public static void main(String[] args) {
 	  MazeGame g = new MazeGame(10,5);
 	  System.out.println("The board is\n"+g.theBoard);
-	  MazePlayer p1 = new RandomPlayer("goN");
+	  MazePlayer p1 = new jbs2011.jsoued.maze.JsouedPlayer("goN");
 	  MazePlayer p2 = new RandomPlayer("rand1");
-	  MazePlayer p3 = new RandomPlayer("rand2");
+	//  MazePlayer p3 = new RandomPlayer("rand2");
 	  g.addPlayer(p1);
 	  g.addPlayer(p2);
 //	  g.addPlayer(p3);
