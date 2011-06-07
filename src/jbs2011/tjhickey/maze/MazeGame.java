@@ -155,7 +155,7 @@ public class MazeGame {
 			  g.addPlayer(p1);
 			  g.addPlayer(p2);
 
-			  for(int i=0;i<100;i++){
+			  for(int i=0;i<10;i++){
 				    for (MazePlayer p: g.player.values()){
 						  Direction d = p.nextMove(g.playerPosition,g.jewelPosition,g.theBoard);
 						  g.movePlayer(p,d);

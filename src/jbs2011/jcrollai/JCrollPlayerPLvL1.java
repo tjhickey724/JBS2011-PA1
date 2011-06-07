@@ -1,4 +1,4 @@
-package jb2011.jcrollai;
+package jbs2011.jcrollai;
 
 import java.util.ArrayList;
 import java.util.HashMap;
