@@ -27,6 +27,16 @@ public class TJHplayer extends MazePlayer {
 
 		  players.add(new jbs2011.jcrollai.JCrollPlayerPLvL1("jc1"));
 		  players.add(new jbs2011.jcrollai.JCrollPlayerPLvL9001("jc2"));
+		  
+		  players.add(new jbs2011.jsoued.maze.JsouedPlayer("js1"));
+		  players.add(new jbs2011.jsoued.maze.JsouedPlayer2("js2"));
+		  
+		  players.add(new jbs2011.acsuit.maze.HarryPotter("as1"));
+		  players.add(new jbs2011.acsuit.maze.Voldemort("as2"));
+		  
+		  players.add(new jbs2011.tkirk.maze.TKBadPlayer("tk1"));
+		  players.add(new jbs2011.tkirk.maze.TKGoodPlayer("tk2"));
+
 
 		  players.add(new RandomPlayer("tim2rand"));
 		  jbs2011.tjhickey.maze.MazeGame.playTournament( players);
