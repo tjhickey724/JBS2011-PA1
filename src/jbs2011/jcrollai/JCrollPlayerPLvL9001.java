@@ -1,4 +1,4 @@
-package JCrollAI;
+package jbs2011.jcrollai;
 
 
 import java.util.ArrayList;
