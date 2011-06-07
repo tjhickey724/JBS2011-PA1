@@ -67,29 +67,20 @@ public class SaharPlayer extends MazePlayer {
 	 */
 	public Direction nextMove(HashMap<String, MazePosition> players,
 			ArrayList<MazePosition> jewels, MazeView maze) {
-		// TODO Auto-generated method stub
+
 		// According to Bjorn (and intuition), the Mazeview is a mistake. We should be given MazeBoards. Since we are implementing an abstract class, we don't have the luxury of changing it in code.
 		// Instead, I am going to assume every MazeView maze is actually a MazeBoard maze.
 		// Thing is, the MazeView interface is clearly insuffient because it doesn't let us see the actual, you know, maze.
 		
 		MazeBoard board = (MazeBoard)maze;
 		MazePosition whereAmI = players.get(this.getName());
-		//randomly sort the four directions, and for each direction, see if there's a gem somewhere on that straight line. If so, go there.
-		//if there is no gem in any of the 4 directions, then go randomly.
-		ArrayList<Direction> dirs = new ArrayList<Direction>();
-		dirs.add(Direction.SOUTH);
-		dirs.add(Direction.NORTH);
-		dirs.add(Direction.WEST);
-		dirs.add(Direction.EAST);
-		
-		Collections.shuffle(dirs);
-		for (Direction d: dirs){
-			Direction goD = this.findGem(whereAmI, jewels);
-			if (goD != null) {
-				return d;
-			}
-			//if m is null, there is no gem. 
+
+		Direction goD = this.findGem(whereAmI, jewels);
+		if (goD != null) {
+			return goD;
 		}
+		 
+		
 		// there is no gem in any direction, go a random direction
 		//random direction code copied from RandomPlayer.java
 		int pick = new Random().nextInt(Direction.values().length);
