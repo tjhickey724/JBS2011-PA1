@@ -1,6 +1,7 @@
 package jbs2011.tjhickey724.maze;
 
 import jbs2011.tjhickey.maze.MazePlayer;
+import jbs2011.tjhickey.maze.MazeGame;
 import jbs2011.tjhickey.maze.MazePosition;
 import jbs2011.tjhickey.maze.Direction;
 import jbs2011.tjhickey.maze.MazeView;
@@ -15,14 +16,24 @@ import java.util.HashMap;
 public class TJHplayer extends MazePlayer {
 	
 	public static void main(String[] args){
+		MazeGame.debugging=false;
+		MazeGame.playTournament(new TJHplayer("tim1"),new TJHplayer("tim2"),20,20,100,50);
+	}
+	
+	public static void playAll() {
+		System.out.println("testing!!!!");
 		  ArrayList<MazePlayer> players = new ArrayList<MazePlayer>();
-		  players.add(new jbs2011.tjhickey724.maze.TJHplayer("tim1"));
+//		  players.add(new jbs2011.tjhickey724.maze.TJHplayer("tim1"));
+		  
 		  players.add(new jbs2011.taha.maze.BasicPlayerByTaha("taha-basic"));
 		  players.add(new jbs2011.taha.maze.AdvancedPlayerByTaha("taha-adv"));
+		  
 		  players.add(new jbs2011.gaspar.maze.GasparPlayer1("gasp1"));
 		  players.add(new jbs2011.gaspar.maze.GasparPlayer2("gasp2"));
+		  
 		  players.add(new jbs2011.MichaelsPlayers.cleverMichael("michael-clever"));
 		  players.add(new jbs2011.MichaelsPlayers.dumbMichael("michael-dumb"));
+		  
 		  players.add(new jbs2011.jbenow.maze.JBPlayer1("JB1"));
 		  players.add(new jbs2011.jbenow.maze.JBPlayer2("JB2"));
 		  
@@ -40,9 +51,11 @@ public class TJHplayer extends MazePlayer {
 		  
 		  players.add(new jbs2011.tkirk.maze.TKBadPlayer("tk1"));
 		  players.add(new jbs2011.tkirk.maze.TKGoodPlayer("tk2"));
+		  
+//		  players.add(new jbs2011.mfieldai.MFieldConfusedOne("mf1"));
+		  players.add(new jbs2011.mfieldai.MFieldDOMINATOR("mf2"));
 
-
-		  players.add(new RandomPlayer("tim2rand"));
+//		  players.add(new RandomPlayer("tim2rand"));
 		  jbs2011.tjhickey.maze.MazeGame.playTournament( players);
 	}
 

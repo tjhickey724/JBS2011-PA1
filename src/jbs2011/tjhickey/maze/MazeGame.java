@@ -25,7 +25,7 @@ public class MazeGame {
   public ArrayList<MazePosition> jewelPosition;
   public ArrayList<MazePosition> freeSpace;
   public MazeBoard theBoard;
-  private boolean debugging = false;
+  public static boolean debugging = false;
   
   /**
    * This creates a maze of the specified size and adds up to 10 jewels to the board.
@@ -144,18 +144,40 @@ public class MazeGame {
    * and prints out the results in a table
    */
   public static void playTournament(ArrayList<MazePlayer> players) {
+	 playTournament(players,5,10,10,100);
+  }
+  
+  public static void playTournament(
+		 MazePlayer p1, MazePlayer p2,
+		  int width, int depth, 
+		  int reps, int steps) {
+	  ArrayList<MazePlayer> players = new ArrayList<MazePlayer>();
+	  players.add(p1);
+	  players.add(p2);
+	  playTournament(players,width,depth,reps,steps);
+  }
+  /**
+   * This method plays a round-robin tournament against a set of players
+   * and prints out the results in a table
+   */
+  public static void playTournament(
+		  ArrayList<MazePlayer> players,
+		  int width, int depth, 
+		  int reps, int steps) {
 	  System.out.println("Playing tournament!");
 
 	  int[][] winners = new int[players.size()][players.size()];
 	  for (MazePlayer p1:players)
 		  for (MazePlayer p2:players)
 		   if (!p1.equals(p2))
-		    for (int k=0;k<10;k++){
-			  MazeGame g = new MazeGame(10,5);
+		    for (int k=0;k<reps;k++){
+			  MazeGame g = new MazeGame(width,depth);
 			  g.addPlayer(p1);
 			  g.addPlayer(p2);
 
-			  for(int i=0;i<10;i++){
+			  for(int i=0;i<steps;i++){
+					if (MazeGame.debugging) System.out.println("\n\n************\nround "+i);
+					if (MazeGame.debugging) System.out.println(g.theBoard.drawBoard(g.playerPosition,g.jewelPosition));
 				    for (MazePlayer p: g.player.values()){
 						  Direction d = p.nextMove(g.playerPosition,g.jewelPosition,g.theBoard);
 						  g.movePlayer(p,d);
