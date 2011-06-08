@@ -24,6 +24,10 @@ public class TJHplayer extends MazePlayer {
 		  players.add(new jbs2011.MichaelsPlayers.cleverMichael("michael-clever"));
 		  players.add(new jbs2011.MichaelsPlayers.dumbMichael("michael-dumb"));
 		  players.add(new jbs2011.jbenow.maze.JBPlayer1("JB1"));
+		  players.add(new jbs2011.jbenow.maze.JBPlayer2("JB2"));
+		  
+		  players.add(new jbs2011.sahar.maze.SaharBetterPlayer("sm2"));
+		  players.add(new jbs2011.sahar.maze.SaharPlayer("sm1"));
 
 		  players.add(new jbs2011.jcrollai.JCrollPlayerPLvL1("jc1"));
 		  players.add(new jbs2011.jcrollai.JCrollPlayerPLvL9001("jc2"));
