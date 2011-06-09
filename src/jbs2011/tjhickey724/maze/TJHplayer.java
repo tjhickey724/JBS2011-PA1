@@ -16,14 +16,17 @@ import java.util.HashMap;
 public class TJHplayer extends MazePlayer {
 	
 	public static void main(String[] args){
-		MazeGame.debugging=false;
-		MazeGame.playTournament(new TJHplayer("tim1"),new TJHplayer("tim2"),20,20,100,50);
+		//MazeGame.debugging=true;
+		//MazeGame.playTournament(new TJHplayer("tim1"),new MinDistPlayer("tim2"),20,5,1,50);
+		playAll();
 	}
 	
 	public static void playAll() {
 		System.out.println("testing!!!!");
 		  ArrayList<MazePlayer> players = new ArrayList<MazePlayer>();
-//		  players.add(new jbs2011.tjhickey724.maze.TJHplayer("tim1"));
+//		  
+		  players.add(new jbs2011.tjhickey724.maze.ComboPlayer("timCP"));
+		  players.add(new jbs2011.tjhickey724.maze.MinDistPlayer("timMD"));
 		  
 		  players.add(new jbs2011.taha.maze.BasicPlayerByTaha("taha-basic"));
 		  players.add(new jbs2011.taha.maze.AdvancedPlayerByTaha("taha-adv"));
@@ -56,7 +59,9 @@ public class TJHplayer extends MazePlayer {
 		  players.add(new jbs2011.mfieldai.MFieldDOMINATOR("mf2"));
 
 //		  players.add(new RandomPlayer("tim2rand"));
-		  jbs2011.tjhickey.maze.MazeGame.playTournament( players);
+		  
+		  MazeGame.playTournament(players,20,5,1,50);
+		//  jbs2011.tjhickey.maze.MazeGame.playTournament( players);
 	}
 
 	public TJHplayer(String n) {

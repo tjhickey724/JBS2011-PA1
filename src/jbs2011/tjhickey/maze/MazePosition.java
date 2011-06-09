@@ -13,6 +13,15 @@ public class MazePosition {
   }
   
 
+  public MazePosition move(Direction d) {
+	  switch(d){
+	  case NORTH: return new MazePosition(row,col+1);
+	  case SOUTH: return new MazePosition(row,col-1);
+	  case EAST: return new MazePosition(row+1,col);
+	  case WEST: return new MazePosition(row-1,col);
+	  }
+	  return new MazePosition(row,col);
+  }
   
   public boolean equals(Object x){
 	  if (x instanceof MazePosition){
