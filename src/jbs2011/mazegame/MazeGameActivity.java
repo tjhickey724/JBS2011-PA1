@@ -87,12 +87,12 @@ extends Activity {
             createPaints();
             
             // create the gameboard
-            g = new MazeGame(25,20);
+            g = new MazeGame(10,10);
             board = g.theBoard;	
             
             // next we draw the board onto the mBitmap
             // by creating a canvas backed by the Bitmap and drawing on the canvas
-            mBitmap = Bitmap.createBitmap(400,400,Bitmap.Config.RGB_565);
+            mBitmap = Bitmap.createBitmap(400,600,Bitmap.Config.RGB_565);
             Canvas boardCanvas = new Canvas(mBitmap);
             boardCanvas.drawColor(Color.WHITE);
             drawBoard(boardCanvas);
@@ -106,15 +106,20 @@ extends Activity {
         
         private void createPlayers(){
             // add players to the board
-      	  g.addPlayer( new jbs2011.tjhickey724.maze.MinDistPlayer("MD1"));
+      	  g.addPlayer( new jbs2011.tjhickey.maze.RandomPlayer("Rand"));
 //      	  g.addPlayer( new jbs2011.tjhickey724.maze.MinDistPlayer("MD2"));
-        	/*
-        	  g.addPlayer( new jbs2011.taha.maze.AdvancedPlayerByTaha("Taha"));
+
+//        	  g.addPlayer( new jbs2011.taha.maze.AdvancedPlayerByTaha("Taha"));
         	  g.addPlayer( new jbs2011.jbenow.maze.JBPlayer1("JB"));
-        	  g.addPlayer( new jbs2011.acsuit.maze.HarryPotter("AC"));
+        	  g.addPlayer( new jbs2011.acsuit.maze.Voldemort("AC"));
         	  g.addPlayer( new jbs2011.gaspar.maze.GasparPlayer2("GP"));
         	  g.addPlayer( new jbs2011.jcrollai.JCrollPlayerPLvL1("JC"));
-        	  */
+        	  g.addPlayer( new jbs2011.jsoued.maze.JsouedPlayer2("JS2"));
+        	  g.addPlayer( new jbs2011.mfieldai.MFieldDOMINATOR("MF"));
+        	  g.addPlayer( new jbs2011.MichaelsPlayers.cleverMichael("MW"));
+        	  g.addPlayer( new jbs2011.sahar.maze.SaharBetterPlayer("SM"));
+        	  
+
 
         }
         
@@ -176,7 +181,7 @@ extends Activity {
             	canvas.drawText(
             			s+": "+g.score.get(s),
             			100,
-            			(board.getDepth()+1+2*counter)*dy,
+            			(board.getDepth()+2+2*counter)*dy,
             			mPaints[2]);
             }
         }
