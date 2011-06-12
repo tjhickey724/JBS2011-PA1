@@ -2,12 +2,14 @@ package jbs2011.tjhickey.maze;
 
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class MazeBoard implements MazeView {
   public static final double edginess=0.6;
   public static final double WALL_PROB = 0.25;
   public int width, depth;
   MazeCell[][] board;
+  String otherPlayer;
   
   public int getWidth(){
 	  return width;
@@ -22,6 +24,34 @@ public class MazeBoard implements MazeView {
 	  System.out.println("the maze is below\n\n");
 	  System.out.println(b.toString());
   }
+  public boolean otherPlayer(HashMap<String, MazePosition> players, MazePosition f) {
+		//checks if there is a player nearby to bomb. Returns true if yes.
+	  Iterator iter=players.keySet().iterator();
+		otherPlayer=null;
+		String hold;
+		while(iter.hasNext()){
+			hold=(String) iter.next();
+			if(players.get(hold).row+1==f.row&&f.col==players.get(hold).col){
+				otherPlayer=hold;
+				return true;
+			}else if(players.get(hold).row-1==f.row&&f.col==players.get(hold).col){
+				otherPlayer=hold;
+				return true;
+			}else if(players.get(hold).col+1==f.col&&f.row==players.get(hold).row){
+				otherPlayer=hold;
+				return true;
+			}else if(players.get(hold).col-1==f.col&&f.row==players.get(hold).row){
+				otherPlayer=hold;
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public String getOtherPlayer() {
+		return otherPlayer;
+		
+	}
   
   public boolean canMove(MazePosition p, Direction d){
 	  switch(d){
@@ -220,3 +250,4 @@ public class MazeBoard implements MazeView {
 	  return buf.toString();
   }
 }
+

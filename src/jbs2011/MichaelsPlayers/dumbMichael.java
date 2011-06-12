@@ -1,4 +1,4 @@
-package jbs2011.MichaelsPlayers;
+package jbs2011.michaelsPlayers;
 import jbs2011.tjhickey.maze.*;
 
 import java.util.ArrayList;

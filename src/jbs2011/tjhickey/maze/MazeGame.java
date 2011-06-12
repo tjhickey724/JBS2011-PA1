@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Collections;
 
-import jbs2011.taha.maze.AdvancedPlayerByTaha;
-import jbs2011.taha.maze.BasicPlayerByTaha;
 /**
  * A Maze Game is played by multiple players that are initially assigned random positions
  * in a maze. The maze also contains some jewels. The goal of the players is to move through
@@ -26,6 +24,12 @@ public class MazeGame {
   public ArrayList<MazePosition> freeSpace;
   public MazeBoard theBoard;
   public static boolean debugging = false;
+  public ArrayList<MazePosition> bombs;
+  public ArrayList<MazePosition> chainlinks;
+  public ArrayList<ArrayList<MazePosition>> boardItems;
+  //weapons do what? bombs blow up walls- axes take other players jewels. bombs can send players to random open location
+  //hookshot can grab jewels from afar. Thats enough-
+  
   
   /**
    * This creates a maze of the specified size and adds up to 10 jewels to the board.
@@ -38,20 +42,28 @@ public class MazeGame {
 	  jewelPosition = new ArrayList<MazePosition>();
 	  theBoard = new MazeBoard(w,d);
 	  score = new HashMap<String,Integer>();
+	  bombs=new ArrayList<MazePosition>();
+	  chainlinks=new ArrayList<MazePosition>();
+	  boardItems=new ArrayList<ArrayList<MazePosition>>();
+	  boardItems.add(jewelPosition);
+	  boardItems.add(bombs);
+	  boardItems.add(chainlinks);
 	  
 	  // next we add all free positions into a list and shuffle it!
 	  freeSpace = new ArrayList<MazePosition>();
 	  for (int i=0; i<w; i++)
 		  for(int j=0;j<d;j++)
 			  freeSpace.add(new MazePosition(i,j));
-	  // shuffling the freeSpace allows us to pick a random elt from the list ...
+	  // shuffling the freeSpace allows us to pick a random elmnt from the list ...
 	  Collections.shuffle(freeSpace);
 	  
 	  // here we add up to 20 jewels to the board
 	  for (int i=0;i<Math.min(20,w*d);i++){
 		  MazePosition q = getEmptySpace();
 		  if (debugging) System.out.println("adding a jewel at position "+q);
-		  jewelPosition.add(q);
+		  for(int x=0; x<boardItems.size(); x++){
+			  boardItems.get(x).add(q);//adds bombs and chainlinks 
+		  }
 	  }
 
   }
@@ -67,12 +79,40 @@ public class MazeGame {
    * @param d - the Direction it requests to move (this might not be a valid move!)
    * @return - it returns true if it was able to make the move, false otherwise.
    */
-  public boolean movePlayer(MazePlayer p, Direction d) {
+  public boolean movePlayer(MazePlayer p, int d) {
 //	  System.out.println("Player "+p.name+" requests to move in direction "+d);
 // players can move through walls with some small probability!
 		  // calculate the new position after the move 
+	  switch(d){
+	  case(5)://bombs other player, takes 2 points away and gives it to the bomber. Then moves old player to new location.
+	  	MazePosition q=getEmptySpace();
+		 playerPosition.put(p.getOtherPlayer(), q);
+		 if(score.get(p.getOtherPlayer())>1){
+			 score.put(p.getOtherPlayer(),  score.get(p.getOtherPlayer())-2);
+			 score.put(p.name, score.get(p.name)+2);
+		 }
+	  	
+	  case(6)://grabs the jewel that the hookshot can reach, adds points to player, and sets jewel in new location
+		  MazePosition f=getEmptySpace();
+		  for(int x=0; x<jewelPosition.size(); x++){
+			  if(jewelPosition.get(x).row==player.get(p.name).pointShot().row &&
+					  jewelPosition.get(x).col==player.get(p.name).pointShot().col ){
+				  score.put(p.name, score.get(p.name)+5);
+				  jewelPosition.remove(x);
+				  jewelPosition.add(f);
+			  }
+		  }
+	  default:
+	  	//these run the regular north south orientations with movement.
 		  MazePosition oldPos = playerPosition.get(p.name);
-		  MazePosition newPos = theBoard.tryMove(oldPos,d);
+		 Direction toMove=null;
+		  switch(d){
+		 case(1):toMove=Direction.NORTH;
+		 case(2):toMove=Direction.SOUTH;
+		 case(3):toMove=Direction.EAST;
+		 case(4):toMove=Direction.WEST;
+		 }
+		  MazePosition newPos = theBoard.tryMove(oldPos,toMove);
 
 		  
 		  //make sure there is no other player at that position
@@ -90,7 +130,7 @@ public class MazeGame {
 		  if (debugging) System.out.println(p.name+": "+oldPos+" -> "+newPos);
 		  
 		  //take off points if you moved through a wall
-		  if (!theBoard.canMove(oldPos,d)){
+		  if (!theBoard.canMove(oldPos,toMove)){
 			  score.put(p.name,score.get(p.name)-2);
 			  if (debugging) System.out.println(p.name+" moved through a wall");
 		  }
@@ -100,6 +140,9 @@ public class MazeGame {
 		  
 		  // check to see if there is a jewel in the new position.
 		  int i = jewelPosition.indexOf(newPos);
+		  int o=bombs.indexOf(newPos);
+		  int w= chainlinks.indexOf(newPos);
+		  
 		  if (i > -1) {
 			  // add 5 to the score
 			  score.put(p.name,score.get(p.name)+5);
@@ -107,16 +150,29 @@ public class MazeGame {
 			  jewelPosition.remove(i);
 			  if (debugging) System.out.println("and lands on a jewel!, score is now " +score.get(p.name));
 			  // add another jewel
-			  MazePosition q = getEmptySpace();
-			  jewelPosition.add(q);
-			  if (debugging) System.out.println("adding a new jewel at "+q);
+			  MazePosition t = getEmptySpace();
+			  jewelPosition.add(t);
+			  if (debugging) System.out.println("adding a new jewel at "+t);
 			  
+		  }else if(o>-1){//removes bomb if player can hold more, if picked up, sets a new one in a new place.
+			  if(player.get(p.name).addBomb()){
+				  bombs.remove(o);
+				  MazePosition v=getEmptySpace();
+				  bombs.add(v);
+			  }
+		  }else if(w>-1){//removes chain if player can hold more, sets new one in place.
+			 if(player.get(p.name).addChain()){
+				 bombs.remove(w);
+				 MazePosition c=getEmptySpace();
+				 chainlinks.add(c);
+			 }  
 		  }
 		  else {
 			  // if no jewel, then remove the space from the freeSpace list
 			  freeSpace.remove(newPos);
 		  }
 		  return true;
+	  }
 
   }
   
@@ -144,7 +200,7 @@ public class MazeGame {
    * and prints out the results in a table
    */
   public static void playTournament(ArrayList<MazePlayer> players) {
-	 playTournament(players,5,10,10,100);
+	 playTournament(players,5,10,10,5);
   }
   
   public static void playTournament(
@@ -179,7 +235,7 @@ public class MazeGame {
 					if (MazeGame.debugging) System.out.println("\n\n************\nround "+i);
 					if (MazeGame.debugging) System.out.println(g.theBoard.drawBoard(g.playerPosition,g.jewelPosition));
 				    for (MazePlayer p: g.player.values()){
-						  Direction d = p.nextMove(g.playerPosition,g.jewelPosition,g.theBoard);
+						  int d = p.nextMove(g.playerPosition,g.jewelPosition,g.theBoard, g.bombs, g.chainlinks);
 						  g.movePlayer(p,d);
 					    }
 			  }
@@ -214,10 +270,10 @@ public class MazeGame {
   public static void main(String[] args) {
 	  MazeGame g = new MazeGame(10,5);
 	  System.out.println("The board is\n"+g.theBoard);
-	  MazePlayer p1 = new jbs2011.jsoued.maze.JsouedPlayer("goN");
-	  MazePlayer p2 = new RandomPlayer("rand1");
+	 MazePlayer p1 = new RandomPlayer("Droid");
+	  MazePlayer p2= new HumanPlayer("Human");
 	//  MazePlayer p3 = new RandomPlayer("rand2");
-	  g.addPlayer(p1);
+	  //g.addPlayer(p1);
 	  g.addPlayer(p2);
 //	  g.addPlayer(p3);
 	 // for(int i=0;i<10;i++) g.addPlayer(new RandomPlayer("newrand"+i));
@@ -225,7 +281,7 @@ public class MazeGame {
 		if (g.debugging) System.out.println("\n\n************\nround "+i);
 		if (g.debugging) System.out.println(g.theBoard.drawBoard(g.playerPosition,g.jewelPosition));
 	    for (MazePlayer p: g.player.values()){
-		  Direction d = p.nextMove(g.playerPosition,g.jewelPosition,g.theBoard);
+		  int d = p.nextMove(g.playerPosition,g.jewelPosition,g.theBoard, g.bombs, g.chainlinks);
 //		  if (g.debugging) System.out.println("Trying to move player "+p.name+" in direction "+d);
 		  g.movePlayer(p,d);
 	    }
@@ -236,8 +292,9 @@ public class MazeGame {
 		  System.out.println(p + ": "+g.score.get(p));
 	  
 	  ArrayList<MazePlayer> players = new ArrayList<MazePlayer>();
-	  players.add(new jbs2011.tjhickey724.maze.TJHplayer("tim1"));
-	  players.add(new RandomPlayer("rand3"));
+	  //players.add(new jbs2011.tjhickey724.maze.TJHplayer("tim1"));
+	  players.add(new RandomPlayer("Droid"));
+	  players.add(new HumanPlayer("Human"));
 	  playTournament( players);
   }
   
