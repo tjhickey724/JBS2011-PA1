@@ -5,6 +5,7 @@ package jbs2011.tjhickey.maze;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Collections;
+import java.util.Random;
 
 import jbs2011.taha.maze.AdvancedPlayerByTaha;
 import jbs2011.taha.maze.BasicPlayerByTaha;
@@ -24,8 +25,10 @@ public class MazeGame {
   public HashMap<String,MazePosition> playerPosition;
   public ArrayList<MazePosition> jewelPosition;
   public ArrayList<MazePosition> freeSpace;
+  public ArrayList<MazePosition> transportPosition;
   public MazeBoard theBoard;
   public static boolean debugging = false;
+  MazePosition transPos;
   
   /**
    * This creates a maze of the specified size and adds up to 10 jewels to the board.
@@ -36,6 +39,7 @@ public class MazeGame {
 	  player = new HashMap<String,MazePlayer>();
 	  playerPosition = new HashMap<String,MazePosition>();
 	  jewelPosition = new ArrayList<MazePosition>();
+	  transportPosition = new ArrayList<MazePosition>();
 	  theBoard = new MazeBoard(w,d);
 	  score = new HashMap<String,Integer>();
 	  
@@ -53,7 +57,14 @@ public class MazeGame {
 		  if (debugging) System.out.println("adding a jewel at position "+q);
 		  jewelPosition.add(q);
 	  }
-
+	  
+	  for (int i=0; i<Math.min(2, w*d); i++){
+		  MazePosition q = getEmptySpace();
+		  if (debugging) System.out.println("adding a transport square at position "+q);
+		  transportPosition.add(q);
+	  }
+	  Random random = new Random();
+	  transPos = new MazePosition(random.nextInt(w), random.nextInt(d));
   }
   
   /**
@@ -98,6 +109,14 @@ public class MazeGame {
 		  // mark that old space as "free space"
 		  freeSpace.add(0,oldPos);
 		  
+		  //check to see if there is a transport square in the new position.
+		  int k = transportPosition.indexOf(newPos);
+		  if (k > -1) {
+			  transport(newPos);
+		  }
+		  else {
+			  freeSpace.remove(newPos);
+		  }
 		  // check to see if there is a jewel in the new position.
 		  int i = jewelPosition.indexOf(newPos);
 		  if (i > -1) {
@@ -118,6 +137,10 @@ public class MazeGame {
 		  }
 		  return true;
 
+  }
+  
+  public MazePosition transport(MazePosition newPos){
+	  return transPos;
   }
   
   public void addPlayer( MazePlayer p) {

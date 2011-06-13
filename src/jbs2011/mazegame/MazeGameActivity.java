@@ -124,7 +124,7 @@ extends Activity {
         }
         
         private void createPaints(){
-            mPaints = new Paint[4];
+            mPaints = new Paint[5];
             
             mPaints[0] = new Paint();
             mPaints[0].setAntiAlias(true);
@@ -140,12 +140,19 @@ extends Activity {
             mPaints[2].setAntiAlias(true);
             mPaints[2].setStyle(Paint.Style.FILL);
             mPaints[2].setColor(0xFF0000FF);
+            
+            //A color to mark where the transport squares occurs
+            mPaints[3] = new Paint();
+            mPaints[3].setAntiAlias(true);
+            mPaints[3].setStyle(Paint.Style.FILL);
+            mPaints[3].setColor(0x9A32CD);
 
         }
  
         
 /**
- * This blanks the screen, draws the board, draws the jewels and players
+ * This blanks the screen, draws the board, draws the jewels, players, and 
+ * trasport squares
  * and writes the players scores at the bottom 
  */
         @Override protected void onDraw(Canvas canvas) {
@@ -153,7 +160,8 @@ extends Activity {
     		//drawBoard(canvas);
             canvas.drawBitmap(mBitmap, 0, 0, mPaints[0]);
     		drawJewels(canvas);
-    		drawPlayers(canvas);        
+    		drawTransportSquares(canvas);
+    		drawPlayers(canvas);  
             invalidate();
         }
         
@@ -183,6 +191,14 @@ extends Activity {
             			100,
             			(board.getDepth()+2+2*counter)*dy,
             			mPaints[2]);
+            }
+        }
+        
+        private void drawTransportSquares(Canvas canvas){
+        	for (MazePosition p:g.transportPosition){
+            	int left = p.row*dx+margin+2;
+            	int bottom = board.getDepth()*dy - p.col*dy+margin+2;
+            	canvas.drawRect(left, bottom+dy-4, left+dx-4, bottom, mPaints[3]);
             }
         }
         
