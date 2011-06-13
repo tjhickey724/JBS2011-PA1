@@ -1,5 +1,7 @@
 package jbs2011.mazegame;
 
+//beware - I heavily changed the code to allow for GA deathmatches. -sahar
+
 
 import java.util.Arrays;
 import java.util.Random;
