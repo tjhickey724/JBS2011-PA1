@@ -1,8 +1,11 @@
 package jbs2011.tjhickey.maze;
 
+import java.util.ArrayList;
+
 public class MazePosition {
   public int row;
   public int col;
+
   
   public MazePosition(int r, int c){
 	  this.row=r; this.col=c;

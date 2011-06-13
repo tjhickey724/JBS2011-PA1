@@ -5,6 +5,7 @@ package jbs2011.tjhickey.maze;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Collections;
+import java.util.List;
 
 import jbs2011.taha.maze.AdvancedPlayerByTaha;
 import jbs2011.taha.maze.BasicPlayerByTaha;
@@ -27,6 +28,11 @@ public class MazeGame {
   public MazeBoard theBoard;
   public static boolean debugging = false;
   
+  //Used for Jackie's implementation of PA2.
+  public HashMap<MazePosition, Item> items;
+  public ArrayList<MazePosition> itemPosition;
+  public HashMap<MazePosition, ArrayList<MazePlayer>> positionPlayer;
+  
   /**
    * This creates a maze of the specified size and adds up to 10 jewels to the board.
    * @param w width of the board
@@ -38,6 +44,11 @@ public class MazeGame {
 	  jewelPosition = new ArrayList<MazePosition>();
 	  theBoard = new MazeBoard(w,d);
 	  score = new HashMap<String,Integer>();
+	  
+	  //Used for Jackie's implementation of PA2
+	  items = new HashMap<MazePosition,Item>();
+	  itemPosition = new ArrayList<MazePosition>();
+	  positionPlayer = new HashMap<MazePosition, ArrayList<MazePlayer>>();
 	  
 	  // next we add all free positions into a list and shuffle it!
 	  freeSpace = new ArrayList<MazePosition>();
@@ -52,6 +63,15 @@ public class MazeGame {
 		  MazePosition q = getEmptySpace();
 		  if (debugging) System.out.println("adding a jewel at position "+q);
 		  jewelPosition.add(q);
+	  }
+	  
+	  // Jackie's implementation
+	  // Here we add up to 4 items to the board
+	  for (int i=0; i<Math.min(4,w*d); i++){
+		  MazePosition q = getEmptySpace();
+		  itemPosition.add(q);
+		  items.put(q, new Axe("axe"+i));
+		  
 	  }
 
   }
@@ -75,6 +95,7 @@ public class MazeGame {
 		  MazePosition newPos = theBoard.tryMove(oldPos,d);
 
 		  
+		  /* COMMENTED OUT TO SUPPORT MORE THAN ONE PLAYER IN A CELL
 		  //make sure there is no other player at that position
 		  // and if there is someone there then just return without moving
 		  if (playerPosition.containsValue(newPos)){
@@ -84,10 +105,24 @@ public class MazeGame {
 				  if (debugging) System.out.println(p.name+" stays at "+oldPos);
 			  return false;
 		  }
+		  */
 		  
 		  //otherwise, make the move
 		  playerPosition.put(p.name,newPos);
+		  
+		  //adds player to array list in MazePosition
+		  if(positionPlayer.containsKey(newPos)){
+			  positionPlayer.get(newPos).add(p);
+		  }
+		  else{
+			  ArrayList<MazePlayer> mplayers = new ArrayList<MazePlayer>();
+			  mplayers.add(p);
+			  positionPlayer.put(newPos, mplayers);
+		  }
+		  
 		  if (debugging) System.out.println(p.name+": "+oldPos+" -> "+newPos);
+		  
+		  
 		  
 		  //take off points if you moved through a wall
 		  if (!theBoard.canMove(oldPos,d)){
@@ -97,6 +132,7 @@ public class MazeGame {
 		  
 		  // mark that old space as "free space"
 		  freeSpace.add(0,oldPos);
+		  
 		  
 		  // check to see if there is a jewel in the new position.
 		  int i = jewelPosition.indexOf(newPos);
@@ -115,7 +151,14 @@ public class MazeGame {
 		  else {
 			  // if no jewel, then remove the space from the freeSpace list
 			  freeSpace.remove(newPos);
+			  
+			  //checks to see if there is an item in the new space
+			  if(itemPosition.contains(newPos) && items.containsValue(newPos)){
+				  p.backpack.add(items.remove(newPos));
+				  itemPosition.remove(newPos);
+			  }
 		  }
+		  
 		  return true;
 
   }
@@ -125,6 +168,16 @@ public class MazeGame {
      score.put(p.name,0);
      MazePosition q = getEmptySpace();
      playerPosition.put(p.name, q);
+     //adds player to array list in MazePosition
+	 if(positionPlayer.isEmpty()); 
+	 else if(positionPlayer.containsKey(q)){
+		  positionPlayer.get(q).add(p);
+	  }
+	 else{
+		  ArrayList<MazePlayer> mplayers = new ArrayList<MazePlayer>();
+		  mplayers.add(p);
+		  positionPlayer.put(q, mplayers);
+	  }
      if (debugging) System.out.println("added player "+p.name+" to the board at position "+q);
   }
   
@@ -177,7 +230,7 @@ public class MazeGame {
 
 			  for(int i=0;i<steps;i++){
 					if (MazeGame.debugging) System.out.println("\n\n************\nround "+i);
-					if (MazeGame.debugging) System.out.println(g.theBoard.drawBoard(g.playerPosition,g.jewelPosition));
+					if (MazeGame.debugging) System.out.println(g.theBoard.drawBoard(g.playerPosition,g.jewelPosition,g.itemPosition));
 				    for (MazePlayer p: g.player.values()){
 						  Direction d = p.nextMove(g.playerPosition,g.jewelPosition,g.theBoard);
 						  g.movePlayer(p,d);
@@ -214,7 +267,7 @@ public class MazeGame {
   public static void main(String[] args) {
 	  MazeGame g = new MazeGame(10,5);
 	  System.out.println("The board is\n"+g.theBoard);
-	  MazePlayer p1 = new jbs2011.jsoued.maze.JsouedPlayer("goN");
+	  MazePlayer p1 = new jbs2011.jbenow.maze.JBPlayer_PA2("newPlayer");
 	  MazePlayer p2 = new RandomPlayer("rand1");
 	//  MazePlayer p3 = new RandomPlayer("rand2");
 	  g.addPlayer(p1);
@@ -223,7 +276,7 @@ public class MazeGame {
 	 // for(int i=0;i<10;i++) g.addPlayer(new RandomPlayer("newrand"+i));
 	  for (int i=0;i<100;i++){
 		if (g.debugging) System.out.println("\n\n************\nround "+i);
-		if (g.debugging) System.out.println(g.theBoard.drawBoard(g.playerPosition,g.jewelPosition));
+		if (g.debugging) System.out.println(g.theBoard.drawBoard(g.playerPosition,g.jewelPosition,g.itemPosition));
 	    for (MazePlayer p: g.player.values()){
 		  Direction d = p.nextMove(g.playerPosition,g.jewelPosition,g.theBoard);
 //		  if (g.debugging) System.out.println("Trying to move player "+p.name+" in direction "+d);
@@ -236,7 +289,7 @@ public class MazeGame {
 		  System.out.println(p + ": "+g.score.get(p));
 	  
 	  ArrayList<MazePlayer> players = new ArrayList<MazePlayer>();
-	  players.add(new jbs2011.tjhickey724.maze.TJHplayer("tim1"));
+	  players.add(new jbs2011.jbenow.maze.JBPlayer_PA2("JBNew"));
 	  players.add(new RandomPlayer("rand3"));
 	  playTournament( players);
   }

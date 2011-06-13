@@ -14,6 +14,14 @@ public abstract class MazePlayer {
 
    public String name;
    
+   /**
+    * @author Jackie Benowitz (jbenow)
+    * 
+    * Create a bag of items
+    */
+   public ArrayList<Item> backpack;
+   
+   
    public MazePlayer() {
 	   
    }

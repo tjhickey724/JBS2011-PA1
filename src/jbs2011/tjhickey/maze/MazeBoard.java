@@ -163,7 +163,8 @@ public class MazeBoard implements MazeView {
    */
   public String drawBoard(
 		  HashMap<String,MazePosition> playerPosition, 
-		  ArrayList<MazePosition> jewelPosition) {
+		  ArrayList<MazePosition> jewelPosition,
+		  ArrayList<MazePosition> itemPosition) {
 	  StringBuffer buf = new StringBuffer();
 	  System.out.println("printing!!");
 	  System.out.println("depth="+depth);
@@ -196,6 +197,8 @@ public class MazeBoard implements MazeView {
 			       buf.append(" P ");
 			  else if (jewelPosition.contains(pos))
 				  buf.append(" * ");
+			  else if (itemPosition.contains(pos))
+				  buf.append(" X ");
 			  else 
 				  buf.append("   ");
 			  if (cell.east.getIsOpen()) buf.append(" "); else buf.append("|");
@@ -219,4 +222,5 @@ public class MazeBoard implements MazeView {
 	  // finally, we convert the buffer to a string and return it!
 	  return buf.toString();
   }
+
 }
