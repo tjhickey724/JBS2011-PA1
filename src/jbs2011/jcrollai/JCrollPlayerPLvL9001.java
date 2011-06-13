@@ -1,5 +1,4 @@
-package JCrollAI;
-
+package jbs2011.jcrollai;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,11 +38,12 @@ public class JCrollPlayerPLvL9001 extends MazePlayer
  public Direction nextMove(
 		   HashMap<String,MazePosition> players,
 		   ArrayList<MazePosition> jewels,
+		   ArrayList<MazePosition> PBoots,
 		   MazeView maze)
  		{
 	 
 	   //Finds the MazePosition of the opponent 
-	   Iterator itr = players.keySet().iterator();
+	   Iterator<String> itr = players.keySet().iterator();
 	   String Pindex = (String) itr.next();
 	   
 	   if (n == Pindex)

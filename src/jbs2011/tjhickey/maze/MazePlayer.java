@@ -2,6 +2,7 @@ package jbs2011.tjhickey.maze;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 /**
  * A MazePlayer is a named object that participates in a MazeGame by
@@ -12,14 +13,37 @@ import java.util.HashMap;
  */
 public abstract class MazePlayer {
 
-   String name;
+   protected String name;
+   private boolean haveTeleJ = false;
    
    public MazePlayer() {
 	   
    }
    
    public MazePlayer(String name){
-	  this.name=name;
+	this.name=name;
+   }
+   //acquires pegasus boots
+   public void acquireTeleJ()
+   {
+	   haveTeleJ = true;
+   }
+   
+   //Utilizes the Teleport Comsat
+   public void tele(HashMap<String,MazePosition> players,   ArrayList<MazePosition> jewels,
+		   ArrayList<MazePosition> teleC, MazeView maze)
+   {
+	   if(haveTeleJ = true)
+	   {
+		   //Uses recursion in order to move 		   
+		   if(players.get(name) != null)
+		   {
+			       Random r = new Random();
+				   players.get(name).col = r.nextInt(maze.getDepth()-1)+1;
+				   players.get(name).row = r.nextInt(maze.getWidth()-1)+1;
+		   }
+	   haveTeleJ = false;
+	   }
    }
    
    /**
@@ -36,7 +60,10 @@ public abstract class MazePlayer {
    public abstract Direction nextMove(
 		   HashMap<String,MazePosition> players,
 		   ArrayList<MazePosition> jewels,
-		   MazeView maze) ;
-   
-   
+		   ArrayList<MazePosition> PBoots,
+		   MazeView maze) ;   
+	public boolean getTeleJ()
+	{
+		return haveTeleJ;
+	}
 }

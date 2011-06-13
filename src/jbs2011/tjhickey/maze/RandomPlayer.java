@@ -18,6 +18,7 @@ public class RandomPlayer extends MazePlayer {
 	   public Direction nextMove(
 			   HashMap<String,MazePosition> players,
 			   ArrayList<MazePosition> jewels,
+			   ArrayList<MazePosition> PBoots,
 			   MazeView maze) {
 		int pick = new Random().nextInt(Direction.values().length);
 		return Direction.values()[pick];

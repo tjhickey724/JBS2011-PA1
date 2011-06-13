@@ -16,10 +16,12 @@ import java.util.Collections;
  *
  */
 public class MazeGame {
-  public HashMap<String,Integer> score;
+  public static HashMap<String,Integer> score;
   public HashMap<String,MazePlayer> player;
   public HashMap<String,MazePosition> playerPosition;
   public ArrayList<MazePosition> jewelPosition;
+  
+  public static ArrayList<MazePosition> TeleJPosition;
   public ArrayList<MazePosition> freeSpace;
   public MazeBoard theBoard;
   private boolean debugging = false;
@@ -32,6 +34,7 @@ public class MazeGame {
   public MazeGame(int w, int d) {
 	  player = new HashMap<String,MazePlayer>();
 	  playerPosition = new HashMap<String,MazePosition>();
+	  TeleJPosition = new ArrayList<MazePosition>();
 	  jewelPosition = new ArrayList<MazePosition>();
 	  theBoard = new MazeBoard(w,d);
 	  score = new HashMap<String,Integer>();
@@ -50,7 +53,12 @@ public class MazeGame {
 		  if (debugging) System.out.println("adding a jewel at position "+q);
 		  jewelPosition.add(q);
 	  }
-
+	  //Here we add how many TeleC we add to the board right now it should be 2
+	  for (int j=0;j<Math.min(20,w*d);j++){
+		  MazePosition a = getEmptySpace();
+		  if (debugging) System.out.println("adding TeleC at position "+a);
+		  TeleJPosition.add(a);
+	  }
   }
   
   /**
@@ -107,7 +115,24 @@ public class MazeGame {
 			  MazePosition q = getEmptySpace();
 			  jewelPosition.add(q);
 			  if (debugging) System.out.println("adding a new jewel at "+q);
+		
 			  
+			  //check to see if there are TeleC in the new Position	
+			  int j = TeleJPosition.indexOf(newPos);
+			  if (j > -1) 
+			  {
+				  //gives player TeleC
+				  p.acquireTeleJ(); 
+				  //adds 15 points for each teleJewelGained
+				  score.put(p.name,score.get(p.name)+15);
+				  // remove the TeleC
+				  TeleJPosition.remove(j);
+				  if (debugging) System.out.println("and lands on TeleJ!");
+				  // add another TeleC
+				  q = getEmptySpace();
+				  TeleJPosition.add(q);
+			  }
+		  //Adds to the Player Pegasus Boots!
 		  }
 		  else {
 			  // if no jewel, then remove the space from the freeSpace list
@@ -126,6 +151,10 @@ public class MazeGame {
   }
   
   public void addJewel() {
+	  jewelPosition.add(getEmptySpace());
+  }
+  //Adds a new pair of boots to the maze
+  public void addTeleC() {
 	  jewelPosition.add(getEmptySpace());
   }
     	 
@@ -154,7 +183,7 @@ public class MazeGame {
 
 			  for(int i=0;i<1000;i++){
 				    for (MazePlayer p: g.player.values()){
-						  Direction d = p.nextMove(g.playerPosition,g.jewelPosition,g.theBoard);
+						  Direction d = p.nextMove(g.playerPosition,g.jewelPosition,TeleJPosition, g.theBoard);
 						  g.movePlayer(p,d);
 					    }
 			  }
@@ -183,7 +212,6 @@ public class MazeGame {
 	  System.out.println("The board is\n"+g.theBoard);
 	  MazePlayer p1 = new RandomPlayer("goN");
 	  MazePlayer p2 = new RandomPlayer("rand1");
-	  MazePlayer p3 = new RandomPlayer("rand2");
 	  g.addPlayer(p1);
 	  g.addPlayer(p2);
 //	  g.addPlayer(p3);
@@ -192,7 +220,7 @@ public class MazeGame {
 		if (g.debugging) System.out.println("\n\n************\nround "+i);
 		if (g.debugging) System.out.println(g.theBoard.drawBoard(g.playerPosition,g.jewelPosition));
 	    for (MazePlayer p: g.player.values()){
-		  Direction d = p.nextMove(g.playerPosition,g.jewelPosition,g.theBoard);
+		  Direction d = p.nextMove(g.playerPosition,g.jewelPosition,TeleJPosition, g.theBoard);
 //		  if (g.debugging) System.out.println("Trying to move player "+p.name+" in direction "+d);
 		  g.movePlayer(p,d);
 	    }

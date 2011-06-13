@@ -1,28 +1,24 @@
-package JCrollAI;
+package jbs2011.jcrollai;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
-
 import jbs2011.tjhickey.maze.Direction;
 import jbs2011.tjhickey.maze.MazePlayer;
 import jbs2011.tjhickey.maze.MazePosition;
 import jbs2011.tjhickey.maze.MazeView;
-import jbs2011.tjhickey.maze.RandomPlayer;
 
-public class JCrollPlayerPLvL1 extends MazePlayer 
+public class JCrollPlayerPLvL11 extends MazePlayer 
 {
 	public static void main(String[] args)
 	{
 		  ArrayList<MazePlayer> players = new ArrayList<MazePlayer>();
-		  players.add(new jbs2011.tjhickey724.maze.TJHplayer("tim1"));
-		  players.add(new RandomPlayer("tim2rand"));
 		  players.add(new JCrollPlayerPLvL1("JCroll"));
+		  players.add(new JCrollPlayerPLvL11("JCrollPLvL11"));
 		  jbs2011.tjhickey.maze.MazeGame.playTournament( players);
 		  
 	}
 		  private String n;
-		  public JCrollPlayerPLvL1(String n)
+		  public JCrollPlayerPLvL11(String n)
 		  {
 			  super(n);
 			  this.n=n;
@@ -36,12 +32,20 @@ public class JCrollPlayerPLvL1 extends MazePlayer
 	   public Direction nextMove(
 			   HashMap<String,MazePosition> players,
 			   ArrayList<MazePosition> jewels,
+			   ArrayList<MazePosition> teleJ,
 			   MazeView maze)
 	   {
+		   if(getTeleJ() == true)
+		   {
+			   System.out.println("Old Pos: " + players.get(name).toString());
+			   tele(players,jewels,teleJ,maze);
+			   System.out.println("New Pos: " + players.get(name).toString());
+			   System.out.println(getTeleJ());
+		   }
 		   
 		   int mover=9000;
 		   MazePosition index = jewels.get(0);
-		   //Finds the mazeposition of the nearest jewel
+		   //Finds the maze the nearest jewel
 		   for (int i=0; i<jewels.size(); i++)
 		   {
 			   int temp= Math.abs(jewels.get(i).col-players.get(n).col) + Math.abs(jewels.get(i).row- players.get(n).row);
