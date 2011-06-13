@@ -32,6 +32,7 @@ public class MazeBoard implements MazeView {
 	  }
 	  return false;
   }
+
   
   public MazePosition tryMove(MazePosition p, Direction d) {
 	  int newrow=p.row,newcol=p.col;
@@ -163,7 +164,7 @@ public class MazeBoard implements MazeView {
    */
   public String drawBoard(
 		  HashMap<String,MazePosition> playerPosition, 
-		  ArrayList<MazePosition> jewelPosition) {
+		  ArrayList<MazePosition> jewelPosition, ArrayList<MazePosition> minePosition) {
 	  StringBuffer buf = new StringBuffer();
 	  System.out.println("printing!!");
 	  System.out.println("depth="+depth);
@@ -196,6 +197,8 @@ public class MazeBoard implements MazeView {
 			       buf.append(" P ");
 			  else if (jewelPosition.contains(pos))
 				  buf.append(" * ");
+			  else if (minePosition.contains(pos))
+				  buf.append(" X ");
 			  else 
 				  buf.append("   ");
 			  if (cell.east.getIsOpen()) buf.append(" "); else buf.append("|");

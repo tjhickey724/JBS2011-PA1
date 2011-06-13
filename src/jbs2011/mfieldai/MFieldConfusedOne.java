@@ -22,10 +22,10 @@ public class MFieldConfusedOne extends MazePlayer
 		public static void main(String[] arrrrrgs)
 		{
 			  ArrayList<MazePlayer> players = new ArrayList<MazePlayer>();
-			  players.add(new jbs2011.tjhickey724.maze.TJHplayer("tim1"));
+			 
 			  players.add(new MFieldConfusedOne("whereamI??"));
 			  players.add(new RandomPlayer("tim2rand"));
-			  jbs2011.tjhickey.maze.MazeGame.playTournament( players);
+			  //jbs2011.tjhickey.maze.MazeGame.playTournament( players);
 		}
 
 		public MFieldConfusedOne(String n) 
@@ -42,7 +42,7 @@ public class MFieldConfusedOne extends MazePlayer
 				   //you have a hash map of players
 				   HashMap<String,MazePosition> players,
 				   ArrayList<MazePosition> jewels,
-				   MazeView maze) {
+				   MazeView maze, ArrayList<MazePosition> mines) {
 			   MazePosition temp=players.get(n);
 			   initialX=temp.col;
 			   initialY=temp.row;

@@ -23,9 +23,10 @@ public class MazeGame {
   public HashMap<String,MazePlayer> player;
   public HashMap<String,MazePosition> playerPosition;
   public ArrayList<MazePosition> jewelPosition;
+  public ArrayList<MazePosition> minePosition;
   public ArrayList<MazePosition> freeSpace;
   public MazeBoard theBoard;
-  public static boolean debugging = false;
+  public static boolean debugging = true;
   
   /**
    * This creates a maze of the specified size and adds up to 10 jewels to the board.
@@ -36,6 +37,7 @@ public class MazeGame {
 	  player = new HashMap<String,MazePlayer>();
 	  playerPosition = new HashMap<String,MazePosition>();
 	  jewelPosition = new ArrayList<MazePosition>();
+	  minePosition = new ArrayList<MazePosition>();
 	  theBoard = new MazeBoard(w,d);
 	  score = new HashMap<String,Integer>();
 	  
@@ -52,6 +54,12 @@ public class MazeGame {
 		  MazePosition q = getEmptySpace();
 		  if (debugging) System.out.println("adding a jewel at position "+q);
 		  jewelPosition.add(q);
+	  }
+	  // here we add 5 mines to the board
+	  for (int i=0;i<Math.min(5,w*d);i++){
+		  MazePosition q = getEmptySpace();
+		  if (debugging) System.out.println("adding a mine at position "+q);
+		  minePosition.add(q);
 	  }
 
   }
@@ -100,6 +108,7 @@ public class MazeGame {
 		  
 		  // check to see if there is a jewel in the new position.
 		  int i = jewelPosition.indexOf(newPos);
+		  int m = minePosition.indexOf(newPos);
 		  if (i > -1) {
 			  // add 5 to the score
 			  score.put(p.name,score.get(p.name)+5);
@@ -112,6 +121,21 @@ public class MazeGame {
 			  if (debugging) System.out.println("adding a new jewel at "+q);
 			  
 		  }
+		  if (m > -1)
+		  {
+			 
+			// minus 5 to the score
+			  score.put(p.name,score.get(p.name)-5);
+			  // remove the mine
+			  minePosition.remove(m);
+			  if (debugging) System.out.println("and lands on a mine!, score is now " +score.get(p.name));
+			  // add another jewel
+			  MazePosition q = getEmptySpace();
+			  minePosition.add(q);
+			  if (debugging) System.out.println("adding a new mine at "+q);			  
+		  }
+		  
+		  
 		  else {
 			  // if no jewel, then remove the space from the freeSpace list
 			  freeSpace.remove(newPos);
@@ -130,6 +154,9 @@ public class MazeGame {
   
   public void addJewel() {
 	  jewelPosition.add(getEmptySpace());
+  }
+  public void addMine() {
+	  minePosition.add(getEmptySpace());
   }
     	 
   public MazePosition getEmptySpace() {
@@ -175,11 +202,13 @@ public class MazeGame {
 			  g.addPlayer(p1);
 			  g.addPlayer(p2);
 
+			  
+			  //nextmove 
 			  for(int i=0;i<steps;i++){
 					if (MazeGame.debugging) System.out.println("\n\n************\nround "+i);
-					if (MazeGame.debugging) System.out.println(g.theBoard.drawBoard(g.playerPosition,g.jewelPosition));
+					if (MazeGame.debugging) System.out.println(g.theBoard.drawBoard(g.playerPosition,g.jewelPosition,g.minePosition));
 				    for (MazePlayer p: g.player.values()){
-						  Direction d = p.nextMove(g.playerPosition,g.jewelPosition,g.theBoard);
+						  Direction d = p.nextMove(g.playerPosition,g.jewelPosition,g.theBoard, g.minePosition);
 						  g.movePlayer(p,d);
 					    }
 			  }
@@ -223,9 +252,9 @@ public class MazeGame {
 	 // for(int i=0;i<10;i++) g.addPlayer(new RandomPlayer("newrand"+i));
 	  for (int i=0;i<100;i++){
 		if (g.debugging) System.out.println("\n\n************\nround "+i);
-		if (g.debugging) System.out.println(g.theBoard.drawBoard(g.playerPosition,g.jewelPosition));
+		if (g.debugging) System.out.println(g.theBoard.drawBoard(g.playerPosition,g.jewelPosition,g.minePosition));
 	    for (MazePlayer p: g.player.values()){
-		  Direction d = p.nextMove(g.playerPosition,g.jewelPosition,g.theBoard);
+		  Direction d = p.nextMove(g.playerPosition,g.jewelPosition,g.theBoard,g.minePosition);
 //		  if (g.debugging) System.out.println("Trying to move player "+p.name+" in direction "+d);
 		  g.movePlayer(p,d);
 	    }

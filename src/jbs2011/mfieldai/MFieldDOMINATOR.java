@@ -24,9 +24,10 @@ public class MFieldDOMINATOR extends MazePlayer
 		public static void main(String[] arrrrrgs)
 		{
 			  ArrayList<MazePlayer> players = new ArrayList<MazePlayer>();
-			  players.add(new jbs2011.tjhickey724.maze.TJHplayer("tim1"));
-			  players.add(new MFieldDOMINATOR("Mike1"));
-			  players.add(new RandomPlayer("tim2rand"));
+		
+			  //players.add(new MFieldDOMINATOR("Mike1"));
+			  players.add(new mineAvoider("mineAvoider"));
+			  players.add(new RandomPlayer("tim2Random"));
 			  jbs2011.tjhickey.maze.MazeGame.playTournament( players);
 		}
 
@@ -35,16 +36,12 @@ public class MFieldDOMINATOR extends MazePlayer
 			super(n);
 			this.n=n;
 		}
-		/**
-		 * This player simply picks a random direction and tries to move that way.
-		 * It doesn't even check to see if the move is possible... and relies on the
-		 * GameController to handle impossible move requests responsibly.... 
-		 */
+		
 		   public Direction nextMove(
 				   //you have a hash map of players
 				   HashMap<String,MazePosition> players,
 				   ArrayList<MazePosition> jewels,
-				   MazeView maze) {
+				   MazeView maze, ArrayList<MazePosition> mines) {
 			   //MazePosition player=players.get(n);
 			   
 			   

@@ -33,10 +33,10 @@ public abstract class MazePlayer {
     * @param maze - a maze (with read-only access)
     * @return
     */
+
    public abstract Direction nextMove(
 		   HashMap<String,MazePosition> players,
 		   ArrayList<MazePosition> jewels,
-		   MazeView maze) ;
-   
+		   MazeView maze, ArrayList<MazePosition> mines) ;
    
 }
