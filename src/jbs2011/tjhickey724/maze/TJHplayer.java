@@ -80,4 +80,10 @@ public class TJHplayer extends MazePlayer {
 		int pick = new Random().nextInt(Direction.values().length);
 		return Direction.WEST;
 	}
+	   
+	   public Direction nextMove(HashMap<String, MazePosition> players, 
+	 			ArrayList<MazePosition> jewels, ArrayList<MazePosition> rubies, MazeView maze){
+	 		return this.nextMove(players, jewels, maze);
+	 		
+	 	}
 }

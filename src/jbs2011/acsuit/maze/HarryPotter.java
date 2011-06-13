@@ -48,5 +48,9 @@ public class HarryPotter extends MazePlayer {
 		}
 		return Direction.WEST;
 	}
-
+	public Direction nextMove(HashMap<String, MazePosition> players, 
+			ArrayList<MazePosition> jewels, ArrayList<MazePosition> rubies, MazeView maze){
+		return this.nextMove(players, jewels, maze);
+		
+	}
 }

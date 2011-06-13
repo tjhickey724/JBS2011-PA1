@@ -43,7 +43,7 @@ public class GasparPlayer2 extends MazePlayer{
 
 
 
-	@Override
+	
 	public Direction nextMove(
 			HashMap<String, MazePosition> players,
 			ArrayList<MazePosition> jewels, 
@@ -103,5 +103,9 @@ public class GasparPlayer2 extends MazePlayer{
 	}
 
 
-
+	public Direction nextMove(HashMap<String, MazePosition> players, 
+			ArrayList<MazePosition> jewels, ArrayList<MazePosition> rubies, MazeView maze){
+		return this.nextMove(players, jewels, maze);
+		
+	}
 }

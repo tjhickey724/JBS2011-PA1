@@ -73,4 +73,10 @@ public class Racer extends MazePlayer {
 		   return toJewel.goFrom(players.get(this.name));
 		   
 	}
+	   
+	   public Direction nextMove(HashMap<String, MazePosition> players, 
+	 			ArrayList<MazePosition> jewels, ArrayList<MazePosition> rubies, MazeView maze){
+	 		return this.nextMove(players, jewels, maze);
+	 		
+	 	}
 }

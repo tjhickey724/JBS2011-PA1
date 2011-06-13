@@ -61,7 +61,7 @@ public class SaharBetterPlayer extends MazePlayer {
 	
 	
 	
-	@Override
+	
 	/**
 	 * This player will try to see if a gem is in a straight line from her current position. 
 	 * For the CLOSEST gem that matches this, move straight in that direction, even through walls.
@@ -84,4 +84,9 @@ public class SaharBetterPlayer extends MazePlayer {
 		
 	}
 		
+	public Direction nextMove(HashMap<String, MazePosition> players, 
+			ArrayList<MazePosition> jewels, ArrayList<MazePosition> rubies, MazeView maze){
+		return this.nextMove(players, jewels, maze);
+		
+	}
 }

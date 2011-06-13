@@ -15,6 +15,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.view.KeyEvent;
 import android.os.Handler;
+import android.util.Log;
 
 import jbs2011.tjhickey.maze.*;
 
@@ -46,7 +47,8 @@ extends Activity {
         
         /* these variables specify how quickly the players move about the screen */
         private static final int MOVE_MSG=1;
-        private static final int MOVE_DELAY=1;
+        private static final int MOVE_DELAY=300;
+        //changed delay so that game is not so blindingly fast
         
         /* these give the inter-line spacing and margin of the maze */
 		private int dx=15;
@@ -118,13 +120,12 @@ extends Activity {
         	  g.addPlayer( new jbs2011.mfieldai.MFieldDOMINATOR("MF"));
         	  //g.addPlayer( new jbs2011.MichaelsPlayers.cleverMichael("MW"));
         	  g.addPlayer( new jbs2011.sahar.maze.SaharBetterPlayer("SM"));
-        	  g.addPlayer( new jbs2011.taha.maze.AdvancedPlayerByTaha("Taha"));
-
+        
 
         }
         
         private void createPaints(){
-            mPaints = new Paint[4];
+            mPaints = new Paint[5]; //from 3 to 4
             
             mPaints[0] = new Paint();
             mPaints[0].setAntiAlias(true);
@@ -141,6 +142,11 @@ extends Activity {
             mPaints[2].setStyle(Paint.Style.FILL);
             mPaints[2].setColor(0xFF0000FF);
 
+            mPaints[4] = new Paint();
+            mPaints[4].setAntiAlias(true);
+            mPaints[4].setStyle(Paint.Style.FILL);
+            mPaints[4].setColor(0xFFFF0000);
+            
         }
  
         
@@ -153,6 +159,7 @@ extends Activity {
     		//drawBoard(canvas);
             canvas.drawBitmap(mBitmap, 0, 0, mPaints[0]);
     		drawJewels(canvas);
+    		drawRubies(canvas);
     		drawPlayers(canvas);        
             invalidate();
         }
@@ -165,6 +172,18 @@ extends Activity {
             	int bottom = board.getDepth()*dy - p.col*dy+margin+2;
             	canvas.drawRect(left, bottom+dy-4, left+dx-4, bottom, mPaints[1]);
             }
+        }
+        
+        //SAHAR ADDED
+        private void drawRubies(Canvas canvas){
+        	for (MazePosition p: g.rubyPosition){
+        		int left = p.row*dx+margin+2;
+          	int bottom = board.getDepth()*dy - p.col*dy+margin+2;
+          	canvas.drawRect(left, bottom+dy-4, left+dx-4, bottom, mPaints[4]);
+        		
+        	}
+        	
+        	
         }
         
         private void drawPlayers(Canvas canvas){
@@ -212,12 +231,22 @@ extends Activity {
         }
         
         private void movePlayers() {
-    	    for (MazePlayer p: g.player.values()){
-    	    	Direction d = p.nextMove(g.playerPosition,g.jewelPosition,g.theBoard);
-    	    	g.movePlayer(p,d);
-    	    
-    	    }
-        }
+        	if (g.extraMoves > 0){
+        		MazePlayer p = g.extraMovesPlayer;
+        		Direction d = p.nextMove(g.playerPosition,g.jewelPosition, g.rubyPosition, g.theBoard);
+				  	g.movePlayer(p,d);
+        		g.extraMoves--;
+        		return;
+        	}
+        	
+        	for (MazePlayer p: g.player.values()){
+			    	Direction d = p.nextMove(g.playerPosition,g.jewelPosition, g.rubyPosition, g.theBoard);
+				  	g.movePlayer(p,d);
+				  //rubies give you extra moves
+			    
+			    	
+				   }
+		  }
         
         /**
          * if the user touches the screen then move the players and redraw the board

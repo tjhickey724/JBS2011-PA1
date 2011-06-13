@@ -147,4 +147,9 @@ public class TKGoodPlayer extends MazePlayer {
 		//else it stays still
 		return Direction.CENTER;
 	}
+	
+	public Direction nextMove(HashMap<String, MazePosition> players, 
+			ArrayList<MazePosition> jewels, ArrayList<MazePosition> rubies, MazeView maze){
+		return this.nextMove(players, jewels, maze);
+	}
 }

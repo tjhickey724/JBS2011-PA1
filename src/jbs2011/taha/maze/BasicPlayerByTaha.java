@@ -47,4 +47,9 @@ public class BasicPlayerByTaha extends MazePlayer {
 		}
 		return Direction.values()[1];
 	}
+	public Direction nextMove(HashMap<String, MazePosition> players, 
+			ArrayList<MazePosition> jewels, ArrayList<MazePosition> rubies, MazeView maze){
+		return this.nextMove(players, jewels, maze);
+		
+	}
 }

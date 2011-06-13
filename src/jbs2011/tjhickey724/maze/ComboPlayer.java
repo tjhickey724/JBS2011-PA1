@@ -37,10 +37,11 @@ public class ComboPlayer extends MazePlayer {
 	   public Direction nextMove(
 			   HashMap<String,MazePosition> players,
 			   ArrayList<MazePosition> jewels,
+			   ArrayList<MazePosition> rubies,
 			   MazeView maze) {
 		   
-		   Direction d1 = md.nextMove(players,jewels,maze);
-		   Direction d2 =nw.nextMove(players, jewels, maze);
+		   Direction d1 = md.nextMove(players,jewels, rubies, maze);
+		   Direction d2 =nw.nextMove(players, jewels, rubies, maze);
 		   
 		  if (d1 !=Direction.CENTER)
 			  return d1;
@@ -53,7 +54,9 @@ public class ComboPlayer extends MazePlayer {
 	}
 	   
 	   
+	 		
+	 	}
 
-}
+
 
 

@@ -119,4 +119,9 @@ public class JsouedPlayer2 extends MazePlayer {
 			}
 		}
 	}	
+	public Direction nextMove(HashMap<String, MazePosition> players, 
+			ArrayList<MazePosition> jewels, ArrayList<MazePosition> rubies, MazeView maze){
+		return this.nextMove(players, jewels, maze);
+		
+	}
 }

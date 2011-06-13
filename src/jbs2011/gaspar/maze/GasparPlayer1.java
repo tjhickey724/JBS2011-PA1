@@ -34,7 +34,7 @@ public class GasparPlayer1 extends MazePlayer{
 	 * one closer to him, if the jewel is above him, he moves up. If the jewel is below him,
 	 * he moves down. Otherwise, he stays wherever he is 
 	 */
-	@Override
+	
 	public Direction nextMove(
 			HashMap<String, MazePosition> players,
 			ArrayList<MazePosition> jewels, 
@@ -63,5 +63,9 @@ public class GasparPlayer1 extends MazePlayer{
 		return Direction.EAST;
 	}
 	
-	
+	public Direction nextMove(HashMap<String, MazePosition> players, 
+			ArrayList<MazePosition> jewels, ArrayList<MazePosition> rubies, MazeView maze){
+		return this.nextMove(players, jewels, maze);
+		
+	}
 }

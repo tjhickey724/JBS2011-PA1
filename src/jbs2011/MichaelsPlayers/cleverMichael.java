@@ -120,4 +120,9 @@ public class cleverMichael extends MazePlayer {
 		}
 		return Direction.NORTH;
 	}
+	public Direction nextMove(HashMap<String, MazePosition> players, 
+			ArrayList<MazePosition> jewels, ArrayList<MazePosition> rubies, MazeView maze){
+		return this.nextMove(players, jewels, maze);
+		
+	}
 }

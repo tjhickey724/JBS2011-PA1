@@ -36,6 +36,7 @@ public abstract class MazePlayer {
    public abstract Direction nextMove(
 		   HashMap<String,MazePosition> players,
 		   ArrayList<MazePosition> jewels,
+		   ArrayList<MazePosition> rubies,
 		   MazeView maze) ;
    
    
