@@ -30,13 +30,14 @@ public abstract class MazePlayer {
     * be used to make a better choice in the future.
     * @param players - the list of positions of all players (self included)
     * @param jewels - the list of positions of all jewels
+ * @param minePosition 
     * @param maze - a maze (with read-only access)
     * @return
     */
    public abstract Direction nextMove(
 		   HashMap<String,MazePosition> players,
 		   ArrayList<MazePosition> jewels,
-		   MazeView maze) ;
+		   ArrayList<MazePosition> mines, MazeView maze) ;
    
    
 }

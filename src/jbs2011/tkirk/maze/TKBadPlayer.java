@@ -35,7 +35,7 @@ public class TKBadPlayer extends MazePlayer {
 	 */
 	 public Direction nextMove(
 			   HashMap<String,MazePosition> players,
-			   ArrayList<MazePosition> jewels,
+			   ArrayList<MazePosition> jewels, ArrayList<MazePosition> mines,
 			   MazeView maze) {
 		   
 		Double tempDistance = Math.pow(2, maze.getDepth() * maze.getWidth());
@@ -52,19 +52,19 @@ public class TKBadPlayer extends MazePlayer {
 		}
 		
 		//if the player's position is more south in relation to the jewel   
-		if(players.get(name).row > jewels.get(closestJewel).row) {
+		if(players.get(name).col < jewels.get(closestJewel).col) {
 			return Direction.NORTH;	
 			
 		//if the player's position is more north in relation to the jewel
-		} else if(players.get(name).row < jewels.get(closestJewel).row) {
+		} else if(players.get(name).col > jewels.get(closestJewel).col) {
 			return Direction.SOUTH;
 			
 		//if the player's position is more east in relation to the jewel
-		} else if (players.get(name).col > jewels.get(closestJewel).col) {
+		} else if (players.get(name).row > jewels.get(closestJewel).row) {
 			return Direction.WEST;
 			  
 		//if the player's position is more west in relation to the jewel
-		} else if (players.get(name).col < jewels.get(closestJewel).col) {
+		} else if (players.get(name).row < jewels.get(closestJewel).row) {
 			return Direction.EAST;
 		} else {
 			return Direction.CENTER;

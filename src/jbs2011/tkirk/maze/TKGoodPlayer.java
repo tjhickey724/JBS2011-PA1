@@ -39,7 +39,7 @@ public class TKGoodPlayer extends MazePlayer {
 	 */
 	public Direction nextMove(
 		   HashMap<String,MazePosition> players,
-		   ArrayList<MazePosition> jewels,
+		   ArrayList<MazePosition> jewels, ArrayList<MazePosition> mines,
 		   MazeView maze) {
 		   
 		Double tempDistance = Math.pow(2, maze.getDepth() * maze.getWidth());
@@ -59,88 +59,96 @@ public class TKGoodPlayer extends MazePlayer {
 	    
 	   //looks at the relative position of the coin in relation to the player and makes a move based off of this information
 		
-	   //if the player's position is more south in relation to the jewel
-	   if(players.get(name).row > jewels.get(closestJewel).row && restrictor != 0) {
-			if (maze.canMove(pos, Direction.NORTH)) {
-				restrictor = 1;
-				return Direction.NORTH;
-			//if there is a wall, then go west or east in coordination to which direction will get the player closer to the jewel
-			} else { 
-				if (players.get(name).col > jewels.get(closestJewel).col) {
-					if (maze.canMove(pos, Direction.WEST)) {
-						return Direction.WEST;
-					} 
-				} else if (players.get(name).col < jewels.get(closestJewel).col) {
-					if (maze.canMove(pos, Direction.EAST)) {
-						return Direction.EAST;
-					} 
-				//if there is a wall to the immediate left or right of the player, attempt to go through the wall
-				} else {
+	   //if the player's position is more south in relation to the jewel and there is no mine directly north of the player
+	   if(!mines.contains(players.get(super.name).move(Direction.NORTH))){
+		   if(players.get(name).col < jewels.get(closestJewel).col && restrictor != 0) {
+				if (maze.canMove(pos, Direction.NORTH)) {
+					restrictor = 1;
 					return Direction.NORTH;
-				}	
+				//if there is a wall, then go west or east in coordination to which direction will get the player closer to the jewel
+				} else { 
+					if (players.get(name).row > jewels.get(closestJewel).row) {
+						if (maze.canMove(pos, Direction.WEST)) {
+							return Direction.WEST;
+						} 
+					} else if (players.get(name).row < jewels.get(closestJewel).row) {
+						if (maze.canMove(pos, Direction.EAST)) {
+							return Direction.EAST;
+						} 
+					//if there is a wall to the immediate left or right of the player, attempt to go through the wall
+					} else {
+						return Direction.NORTH;
+					}	
+				}
 			}
-		//if the player's position is more north in relation to the jewel
-		} else if(players.get(name).row < jewels.get(closestJewel).row && restrictor != 1) {
-			if (maze.canMove(pos, Direction.SOUTH)) {
-				restrictor = 0;
-				return Direction.SOUTH;
-			//if there is a wall, then go west or east in coordination to which direction will get the player closer to the jewel
-			} else {
-				if (players.get(name).col > jewels.get(closestJewel).col) {
-					if (maze.canMove(pos, Direction.WEST)) {
-						return Direction.WEST;
-					}
-				} else if (players.get(name).col < jewels.get(closestJewel).col) {
-					if (maze.canMove(pos, Direction.EAST)) {
-						return Direction.EAST;
-					}
-				//if there is a wall to the immediate left or right of the player, attempt to go through the wall
-				} else {
+		//if the player's position is more north in relation to the jewel and there is no mine directly south of the player
+		} else if(!mines.contains(players.get(super.name).move(Direction.SOUTH))){
+			if(players.get(name).col > jewels.get(closestJewel).col && restrictor != 1) {
+				if (maze.canMove(pos, Direction.SOUTH)) {
+					restrictor = 0;
 					return Direction.SOUTH;
+				//if there is a wall, then go west or east in coordination to which direction will get the player closer to the jewel
+				} else {
+					if (players.get(name).row > jewels.get(closestJewel).row) {
+						if (maze.canMove(pos, Direction.WEST)) {
+							return Direction.WEST;
+						}
+					} else if (players.get(name).row < jewels.get(closestJewel).row) {
+						if (maze.canMove(pos, Direction.EAST)) {
+							return Direction.EAST;
+						}
+					//if there is a wall to the immediate left or right of the player, attempt to go through the wall
+					} else {
+						return Direction.SOUTH;
+					}
 				}
 			} 
-		//if the player's position is more north in relation to the jewel
-		} else if (players.get(name).col > jewels.get(closestJewel).col  && restrictor != 2) {
-			if (maze.canMove(pos, Direction.WEST)) {
-				restrictor = 3;
-				return Direction.WEST;
-			//if there is a wall, then go north or south in coordination to which direction will get the player closer to the jewel
-			} else {
-				if (players.get(name).row > jewels.get(closestJewel).row) {
-					if (maze.canMove(pos, Direction.NORTH)) {
-						restrictor = 1;
-						return Direction.NORTH;
-					} 
-				} if (players.get(name).row < jewels.get(closestJewel).row) {
-					if (maze.canMove(pos, Direction.SOUTH)) {
-						restrictor = 0;
-						return Direction.SOUTH;
-					}
-				//if there is a wall to the immediate north or south of the player, attempt to go through the wall
-				} else {
+		//if the player's position is more east in relation to the jewel and there is no mine directly west of the player
+		} else if(!mines.contains(players.get(super.name).move(Direction.WEST))){
+			if (players.get(name).row > jewels.get(closestJewel).row  && restrictor != 2) {
+				if (maze.canMove(pos, Direction.WEST)) {
+					restrictor = 3;
 					return Direction.WEST;
+				//if there is a wall, then go north or south in coordination to which direction will get the player closer to the jewel
+				} else {
+					if (players.get(name).col < jewels.get(closestJewel).col) {
+						if (maze.canMove(pos, Direction.NORTH)) {
+							restrictor = 1;
+							return Direction.NORTH;
+						} 
+					} if (players.get(name).col > jewels.get(closestJewel).col) {
+						if (maze.canMove(pos, Direction.SOUTH)) {
+							restrictor = 0;
+							return Direction.SOUTH;
+						}
+					//if there is a wall to the immediate north or south of the player, attempt to go through the wall
+					} else {
+						return Direction.WEST;
+					}
 				}
 			}
-		//if the player's position is more north in relation to the jewel
-		} else if (players.get(name).col < jewels.get(closestJewel).col && restrictor != 3) {
-			if (maze.canMove(pos, Direction.EAST)) {
-				restrictor = 2;
-				return Direction.EAST;
-			//if there is a wall, then go north or south in coordination to which direction will get the player closer to the jewel
-			} else {
-				if (players.get(name).row > jewels.get(closestJewel).row) {
-					if (maze.canMove(pos, Direction.NORTH)) {
-						restrictor = 1;
-						return Direction.NORTH;
-					}
-				} else if (players.get(name).row < jewels.get(closestJewel).row) {
-					if (maze.canMove(pos, Direction.SOUTH)) {
-						restrictor = 0;
-						return Direction.SOUTH;
-					}
-				//if there is a wall to the immediate north or south of the player, attempt to go through the wall
-				} else { 
+		//if the player's position is more west in relation to the jewel and there is no mine directly east of the player
+		} else if(!mines.contains(players.get(super.name).move(Direction.EAST))){
+			if (players.get(name).row < jewels.get(closestJewel).row && restrictor != 3) {
+				if (maze.canMove(pos, Direction.EAST)) {
+					restrictor = 2;
 					return Direction.EAST;
+				//if there is a wall, then go north or south in coordination to which direction will get the player closer to the jewel
+				} else {
+					if (players.get(name).col < jewels.get(closestJewel).col) {
+						if (maze.canMove(pos, Direction.NORTH)) {
+							restrictor = 1;
+							return Direction.NORTH;
+						}
+					} else if (players.get(name).col > jewels.get(closestJewel).col) {
+						if (maze.canMove(pos, Direction.SOUTH)) {
+							restrictor = 0;
+							return Direction.SOUTH;
+						}
+					//if there is a wall to the immediate north or south of the player, attempt to go through the wall
+					} else { 
+						return Direction.EAST;
+					}
 				}
 			}
 		}

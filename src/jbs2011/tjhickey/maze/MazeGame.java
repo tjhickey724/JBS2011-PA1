@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Collections;
 
-import jbs2011.taha.maze.AdvancedPlayerByTaha;
-import jbs2011.taha.maze.BasicPlayerByTaha;
 /**
  * A Maze Game is played by multiple players that are initially assigned random positions
  * in a maze. The maze also contains some jewels. The goal of the players is to move through
@@ -23,9 +21,10 @@ public class MazeGame {
   public HashMap<String,MazePlayer> player;
   public HashMap<String,MazePosition> playerPosition;
   public ArrayList<MazePosition> jewelPosition;
+  public ArrayList<MazePosition> minePosition;
   public ArrayList<MazePosition> freeSpace;
   public MazeBoard theBoard;
-  public static boolean debugging = false;
+  public static boolean debugging = true;
   
   /**
    * This creates a maze of the specified size and adds up to 10 jewels to the board.
@@ -35,6 +34,7 @@ public class MazeGame {
   public MazeGame(int w, int d) {
 	  player = new HashMap<String,MazePlayer>();
 	  playerPosition = new HashMap<String,MazePosition>();
+	  minePosition = new ArrayList<MazePosition>();
 	  jewelPosition = new ArrayList<MazePosition>();
 	  theBoard = new MazeBoard(w,d);
 	  score = new HashMap<String,Integer>();
@@ -52,6 +52,13 @@ public class MazeGame {
 		  MazePosition q = getEmptySpace();
 		  if (debugging) System.out.println("adding a jewel at position "+q);
 		  jewelPosition.add(q);
+	  }
+	  
+	// here we add up to 5 mines to the board
+	  for (int i=0;i<Math.min(5,w*d);i++){
+		  MazePosition q = getEmptySpace();
+		  if (debugging) System.out.println("adding a mine at position "+q);
+		  minePosition.add(q);
 	  }
 
   }
@@ -116,6 +123,25 @@ public class MazeGame {
 			  // if no jewel, then remove the space from the freeSpace list
 			  freeSpace.remove(newPos);
 		  }
+		  
+		// check to see if there is a jewel in the new position.
+		  int j = minePosition.indexOf(newPos);
+		  if (j > -1) {
+			  // removes 3 from the score
+			  score.put(p.name,score.get(p.name)-3);
+			  // remove the mine
+			  minePosition.remove(j);
+			  if (debugging) System.out.println("and lands on a mine!, score is now " +score.get(p.name));
+			  // add another mine
+			  MazePosition q = getEmptySpace();
+			  minePosition.add(q);
+			  if (debugging) System.out.println("adding a new mine at "+q);
+			  
+		  }
+		  else {
+			  // if no mine, then remove the space from the freeSpace list
+			  freeSpace.remove(newPos);
+		  }
 		  return true;
 
   }
@@ -131,6 +157,10 @@ public class MazeGame {
   public void addJewel() {
 	  jewelPosition.add(getEmptySpace());
   }
+  
+  public void addMine() {
+	  minePosition.add(getEmptySpace());
+  }
     	 
   public MazePosition getEmptySpace() {
 	  // We should consider the case where there is no more freespace!!
@@ -144,7 +174,7 @@ public class MazeGame {
    * and prints out the results in a table
    */
   public static void playTournament(ArrayList<MazePlayer> players) {
-	 playTournament(players,5,10,10,100);
+	 playTournament(players,5,10,20,20);
   }
   
   public static void playTournament(
@@ -177,9 +207,9 @@ public class MazeGame {
 
 			  for(int i=0;i<steps;i++){
 					if (MazeGame.debugging) System.out.println("\n\n************\nround "+i);
-					if (MazeGame.debugging) System.out.println(g.theBoard.drawBoard(g.playerPosition,g.jewelPosition));
+					if (MazeGame.debugging) System.out.println(g.theBoard.drawBoard(g.playerPosition,g.jewelPosition, g.minePosition));
 				    for (MazePlayer p: g.player.values()){
-						  Direction d = p.nextMove(g.playerPosition,g.jewelPosition,g.theBoard);
+						  Direction d = p.nextMove(g.playerPosition,g.jewelPosition, g.minePosition, g.theBoard);
 						  g.movePlayer(p,d);
 					    }
 			  }
@@ -214,19 +244,11 @@ public class MazeGame {
   public static void main(String[] args) {
 	  MazeGame g = new MazeGame(10,5);
 	  System.out.println("The board is\n"+g.theBoard);
-	  MazePlayer p1 = new jbs2011.jsoued.maze.JsouedPlayer("goN");
-	  MazePlayer p2 = new RandomPlayer("rand1");
-	//  MazePlayer p3 = new RandomPlayer("rand2");
-	  g.addPlayer(p1);
-	  g.addPlayer(p2);
-//	  g.addPlayer(p3);
-	 // for(int i=0;i<10;i++) g.addPlayer(new RandomPlayer("newrand"+i));
 	  for (int i=0;i<100;i++){
 		if (g.debugging) System.out.println("\n\n************\nround "+i);
-		if (g.debugging) System.out.println(g.theBoard.drawBoard(g.playerPosition,g.jewelPosition));
+		if (g.debugging) System.out.println(g.theBoard.drawBoard(g.playerPosition,g.jewelPosition, g.minePosition));
 	    for (MazePlayer p: g.player.values()){
-		  Direction d = p.nextMove(g.playerPosition,g.jewelPosition,g.theBoard);
-//		  if (g.debugging) System.out.println("Trying to move player "+p.name+" in direction "+d);
+		  Direction d = p.nextMove(g.playerPosition,g.jewelPosition,g.minePosition, g.theBoard);
 		  g.movePlayer(p,d);
 	    }
 	  }
@@ -236,8 +258,8 @@ public class MazeGame {
 		  System.out.println(p + ": "+g.score.get(p));
 	  
 	  ArrayList<MazePlayer> players = new ArrayList<MazePlayer>();
-	  players.add(new jbs2011.tjhickey724.maze.TJHplayer("tim1"));
-	  players.add(new RandomPlayer("rand3"));
+	  players.add(new jbs2011.tkirk.maze.TKGoodPlayer("tkgood"));
+	  players.add(new jbs2011.tkirk.maze.TKBadPlayer("tkbad"));
 	  playTournament( players);
   }
   
