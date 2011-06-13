@@ -86,6 +86,13 @@ public class MazeGame {
 		  MazePosition oldPos = playerPosition.get(p.name);
 		  MazePosition newPos = theBoard.tryMove(oldPos,d);
 
+		  if(extraMoves > 0) {
+			  extraMoves--;
+		  }
+		  else {
+			  extraMoves = 0;  
+		  }
+		  
 		  //SAHAR EDIT
 		  //check if is there is another player at that position
 		  // and if there is someone there then teleport!
@@ -147,6 +154,8 @@ public class MazeGame {
 			  //get 5 free moves
 			  extraMoves = 5;
 			  extraMovesPlayer = p;
+			  
+			  movePlayer(p,d);
 			  
 			  // add another ruby
 			  MazePosition q = getEmptySpace();

@@ -78,7 +78,7 @@ public class TJHplayer extends MazePlayer {
 			   MazeView maze) {
 		  
 		int pick = new Random().nextInt(Direction.values().length);
-		return Direction.WEST;
+		return Direction.NORTH;
 	}
 	   
 	   public Direction nextMove(HashMap<String, MazePosition> players, 

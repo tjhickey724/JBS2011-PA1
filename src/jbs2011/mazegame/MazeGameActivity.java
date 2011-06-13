@@ -1,6 +1,9 @@
 package jbs2011.mazegame;
 
 
+import java.util.Arrays;
+import java.util.Random;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Message;
@@ -8,6 +11,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -35,7 +39,7 @@ extends Activity {
         setContentView(new MazeView(this));
     }
     
-
+    
     /*
      * this draws a 20x20 grid
      */
@@ -44,10 +48,22 @@ extends Activity {
         private Paint mFramePaint;
         private MazeBoard board;
         private MazeGame g;
+        private int numPlayers = 6;
+        //ok so we are going to set up a genetic algorithm here. 
+        private int[][] configs = new int[numPlayers][6];
+        private String topScore = "Top Score each round:\n";
+       
+        //numPlayers players 
+        //first 5 variables = genetic markers to change
+        // last variable = score (when you get it)
         
         /* these variables specify how quickly the players move about the screen */
         private static final int MOVE_MSG=1;
-        private static final int MOVE_DELAY=300;
+        private static final int MOVE_DELAY=1;
+        private static final int MOVES_TO_END = 200;
+        private static final int ROUNDS = 1500;
+        private static int MoveCounter = 0;
+        private static int RoundsCounter = 0;
         //changed delay so that game is not so blindingly fast
         
         /* these give the inter-line spacing and margin of the maze */
@@ -69,6 +85,22 @@ extends Activity {
                     case MOVE_MSG: {
                         movePlayers();
                         invalidate();
+                        MoveCounter++;
+                        
+                        //Log.d("MazeGameActivity", "MoveCounter - "+  MoveCounter);
+                        if(MoveCounter>MOVES_TO_END){
+                        	recordScores();
+                        	newConfig();
+                        	newGame();
+                        	MoveCounter=0;
+                        	RoundsCounter++;
+                        }
+                        if(RoundsCounter>ROUNDS){
+                        	recordScores();
+                        	printConfigs(false);
+                        	break;
+                        	
+                        }
                         mHandler.sendMessageDelayed(
                                 mHandler.obtainMessage(MOVE_MSG), MOVE_DELAY);
                         break;
@@ -98,6 +130,7 @@ extends Activity {
             Canvas boardCanvas = new Canvas(mBitmap);
             boardCanvas.drawColor(Color.WHITE);
             drawBoard(boardCanvas);
+            initPlayers();
             createPlayers();
 
 
@@ -106,22 +139,165 @@ extends Activity {
 
         }
         
+        private void recordScores(){
+        	//connect to mazeGame g and figure out what the scores are for each player. then add to the array
+        	for (int i = 0; i < numPlayers; i++){
+        		Integer score = g.score.get(          		(Integer.toString(configs[i][0])) );
+        		configs[i][5] = score.intValue();
+        	}
+        	
+        	printConfigs(true);
+        	return; 
+        }
+        
+        private void printConfigs(boolean ShowScores){ //print out the values for the winning algorithms to the error log.
+        	for (int i = 0; i < 20; i++){ 
+        		Log.d("XXXXXXX", "XXXXXXXXXXX");
+        	}
+        	//getting your attention ^
+        	
+        	//now for the functions:
+        	for (int i = 0; i <numPlayers; i++){
+        		Log.d(Integer.toString(i), "Player: " + Integer.toString(i) );
+        		Log.d("", configs[i][1]+ " JewelModifier: ");
+        		Log.d("",  configs[i][2]+ " Ruby Reward");
+        		Log.d("", configs[i][3] + " playerPenalty "  );
+        		Log.d("",  configs[i][4] + " Wall Penalty");
+        	
+        		if(ShowScores){
+        		Log.d("", "Score " + configs[i][5]);
+        		}	
+        		
+        		
+        		for (int j = 0; j < 2; j++){
+        			Log.d("XXX","XXX");
+        		}
+        		
+        	}
+        	
+        	if(!ShowScores){
+        		Log.d("TopScores", topScore);
+        		
+        	}
+        }
+        
+        private void newConfig(){
+        	
+        	
+        	//this is the mutation and recombining part of the genetic algorithm.
+        	//lets do a dummy "extinction"
+        		//first, make a new int[][] of players
+        	int[][] newconfigs = new int[numPlayers][6]; 
+        	 	//now create a new array just of scores
+        	int[] scores = new int[numPlayers];
+        	
+        	for (int i = 0; i < numPlayers; i++){
+        		scores[i] = configs[i][5];
+        	}
+        	
+        	Arrays.sort(scores);
+        	topScore += "\n" + scores[numPlayers-1] + "  ROUND: " + RoundsCounter + "  Worst score: " + scores[0]; //for our records
+        	
+        	
+        	
+        	int c = 0 ; //counter for the next open slot on newconfigs
+        	//now copy over the top half of winning players
+        	int cutoff = scores[numPlayers / 2]; //the middle score (after sort) is the cutoff
+        	for (int i = 0; i < numPlayers; i++){
+        		if (configs[i][5] >= cutoff) {
+        			newconfigs[c][0] = c;
+        			for (int j = 1; j < 5; j++){
+        				newconfigs[c][j] = configs[i][j];
+        			}
+        			c++;
+        		}
+        		if (configs[i][5] == scores[numPlayers-1]){
+        			topScore +="\n Winning stats:    " + 
+        				Integer.toString(configs[i][1]) + ", " + 
+        				Integer.toString(configs[i][2]) + ", " +
+        				Integer.toString(configs[1][3]) + ", " +
+        				Integer.toString(configs[i][4]);
+        				
+        			
+        		}
+        		
+        	}
+        	topScore += "\n";
+        	//ok, now the array has some winners, but it is not full.
+        	
+        	while (c < numPlayers){
+        		//while you still have space, randomly copy and mutate a previous player.
+        		newconfigs[c][0] = c; 
+        		Random r = new Random();
+        		int parent = r.nextInt(c);
+        		for (int j = 1; j < 5; j++){
+    				int parentstat = configs[parent][j];
+    				parentstat = parentstat - 1 + r.nextInt(2); // 
+    				newconfigs[c][j] = parentstat;
+    				//set your stats to be -1 to +1 of your parents'
+    			}
+        		
+        		c++;
+        	}
+        	
+        	//set the new configuration
+        	
+        	configs = newconfigs;
+        	
+        	
+        }
+        
+        
+        private void newGame(){
+        	//start over!
+        	g = new MazeGame(10,10);
+        	
+        	
+        	createPaints();
+            
+            // create the gameboard
+            g = new MazeGame(10,10);
+            board = g.theBoard;	
+            
+            // next we draw the board onto the mBitmap
+            // by creating a canvas backed by the Bitmap and drawing on the canvas
+            mBitmap = Bitmap.createBitmap(400,600,Bitmap.Config.RGB_565);
+            Canvas boardCanvas = new Canvas(mBitmap);
+            boardCanvas.drawColor(Color.WHITE);
+            drawBoard(boardCanvas);
+            
+            createPlayers();
+        	
+        }
+        
+        private void initPlayers(){
+        	Random r = new Random();
+        	for (int i = 0; i < numPlayers; i++){
+        		//cycle through players
+        		configs[i][0]= i; //name
+        		configs[i][1]= r.nextInt(5) + 5; //jewel
+        		configs[i][2] = r.nextInt(3) + 6; //ruby
+        		configs[i][3] = -1 * r.nextInt(3); //player penalty
+        		configs[i][4] = -1 * r.nextInt(4); //wall penalty
+        	}	
+        }
+        
         private void createPlayers(){
             // add players to the board
-      	  g.addPlayer( new jbs2011.tjhickey.maze.RandomPlayer("Rand"));
+      	  /*g.addPlayer( new jbs2011.tjhickey.maze.RandomPlayer("Rand"));
 //      	  g.addPlayer( new jbs2011.tjhickey724.maze.MinDistPlayer("MD2"));
 
 //        	  g.addPlayer( new jbs2011.taha.maze.AdvancedPlayerByTaha("Taha"));
         	  g.addPlayer( new jbs2011.jbenow.maze.JBPlayer1("JB"));
         	  //g.addPlayer( new jbs2011.acsuit.maze.Voldemort("AC"));
         	  //g.addPlayer( new jbs2011.gaspar.maze.GasparPlayer2("GP"));
-        	  g.addPlayer( new jbs2011.jcrollai.JCrollPlayerPLvL1("JC"));
-        	 // g.addPlayer( new jbs2011.jsoued.maze.JsouedPlayer2("JS2"));
-        	  g.addPlayer( new jbs2011.mfieldai.MFieldDOMINATOR("MF"));
-        	  //g.addPlayer( new jbs2011.MichaelsPlayers.cleverMichael("MW"));
-        	  g.addPlayer( new jbs2011.sahar.maze.SaharBetterPlayer("SM"));
+       */
+        	for (int i = 0; i < numPlayers; i++){
+        		g.addPlayer( new jbs2011.sahar.maze.SaharRubyPlayer(Integer.toString(configs[i][0]), configs[i][1], configs[i][2], configs[i][3], configs[i][4]));
+        		//make new players based off the config files
+        		
+        	}
         
-
         }
         
         private void createPaints(){
@@ -228,13 +404,15 @@ extends Activity {
             			
             		}
             	}
+           
         }
         
         private void movePlayers() {
+        	//Log.d("maze game activity", "movePlayers");
         	if (g.extraMoves > 0){
         		MazePlayer p = g.extraMovesPlayer;
         		Direction d = p.nextMove(g.playerPosition,g.jewelPosition, g.rubyPosition, g.theBoard);
-				  	g.movePlayer(p,d);
+				g.movePlayer(p,d);
         		g.extraMoves--;
         		return;
         	}
