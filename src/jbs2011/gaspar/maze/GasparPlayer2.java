@@ -5,6 +5,7 @@ import jbs2011.tjhickey.maze.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 /**
  * class represents a player 
  * the player object  will have a nextMove method that will be given
@@ -47,7 +48,7 @@ public class GasparPlayer2 extends MazePlayer{
 	public Direction nextMove(
 			HashMap<String, MazePosition> players,
 			ArrayList<MazePosition> jewels, 
-			MazeView maze) {
+			MazeView maze, LinkedList<Integer> jewelValue) {
 		jewelsCloser=jewels;
 		MazePosition pos=players.get(name);
 		

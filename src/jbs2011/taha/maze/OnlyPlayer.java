@@ -9,9 +9,9 @@ import jbs2011.tjhickey.maze.MazePlayer;
 import jbs2011.tjhickey.maze.MazePosition;
 import jbs2011.tjhickey.maze.MazeView;
 
-public class AdvancedPlayerByTaha extends MazePlayer {
+public class OnlyPlayer extends MazePlayer {
 
-	public AdvancedPlayerByTaha(String n) {
+	public OnlyPlayer(String n) {
 		super(n);
 	}
 	/**
@@ -23,7 +23,7 @@ public class AdvancedPlayerByTaha extends MazePlayer {
 			   HashMap<String,MazePosition> players,
 			   ArrayList<MazePosition> jewels,
 			   MazeView maze, LinkedList<Integer> jewelValue) {
-		MazePosition myGem = findClosestLegalGem(players.get(this.name), jewels, maze);
+		MazePosition myGem = findClosestLegalGem(players.get(this.name), jewels, maze, jewelValue);
 			int endX = myGem.row*2-1;
 			int endY = myGem.col*2-1;
 			int begX = players.get(this.name).row*2-1;
@@ -52,18 +52,26 @@ public class AdvancedPlayerByTaha extends MazePlayer {
 	
 	
 	//Method to find the closest legal gem's position
-	public static MazePosition findClosestLegalGem(MazePosition self, ArrayList<MazePosition> jewels, MazeView maze){
+	public static MazePosition findClosestLegalGem(MazePosition self, ArrayList<MazePosition> jewels, MazeView maze, LinkedList<Integer> jewelValue){
 		MazePosition safety = new MazePosition(self.row,self.col);
-		int min = maze.getDepth()*maze.getWidth();
+		int max = 0/maze.getDepth()*maze.getWidth();
 		for (int i=0; i<jewels.size();i++){
 			int endX = jewels.get(i).row*2-1;
 			int endY = jewels.get(i).col*2-1;
 			int begX = self.row*2-1;
 			int begY = self.col*2-1;
 			if(Maze.solve(begX,begY,endX,endY,maze)==true){
-				if(Maze.trace(begX,begY,endX,endY,maze).size()<min){
-					min = Maze.trace(begX,begY,endX,endY,maze).size();
+				if(Maze.trace(begX,begY,endX,endY,maze).size()>max){
 					safety = new MazePosition(jewels.get(i).row, jewels.get(i).col);
+					int value = 0;
+					int counter = 0;
+					while(counter<jewelValue.size()){
+						if(jewelValue.get(counter)==safety.row && jewelValue.get(counter+1)==safety.col){
+							value = jewelValue.get(counter+2);
+						}
+						counter = counter + 3;
+					}
+					max = value/Maze.trace(begX,begY,endX,endY,maze).size();
 				}
 			}	
 		}

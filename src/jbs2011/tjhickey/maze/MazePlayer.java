@@ -2,6 +2,7 @@ package jbs2011.tjhickey.maze;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 /**
  * A MazePlayer is a named object that participates in a MazeGame by
@@ -36,7 +37,7 @@ public abstract class MazePlayer {
    public abstract Direction nextMove(
 		   HashMap<String,MazePosition> players,
 		   ArrayList<MazePosition> jewels,
-		   MazeView maze) ;
+		   MazeView maze, LinkedList<Integer> jewelValue) ;
    
    
 }

@@ -2,6 +2,7 @@ package jbs2011.taha.maze;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import jbs2011.tjhickey.maze.Direction;
 import jbs2011.tjhickey.maze.MazePlayer;
@@ -22,7 +23,7 @@ public class BasicPlayerByTaha extends MazePlayer {
 	public Direction nextMove(
 			   HashMap<String,MazePosition> players,
 			   ArrayList<MazePosition> jewels,
-			   MazeView maze) {
+			   MazeView maze, LinkedList<Integer> jewelValue) {
 		for (int i=0; i<jewels.size();i++){
 			int endX = jewels.get(i).row*2-1;
 			int endY = jewels.get(i).col*2-1;

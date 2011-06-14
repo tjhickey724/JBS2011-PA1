@@ -2,6 +2,7 @@
 package jbs2011.tjhickey.maze;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Random;
 import java.util.HashMap;
 
@@ -18,7 +19,7 @@ public class RandomPlayer extends MazePlayer {
 	   public Direction nextMove(
 			   HashMap<String,MazePosition> players,
 			   ArrayList<MazePosition> jewels,
-			   MazeView maze) {
+			   MazeView maze, LinkedList<Integer> jewelValue) {
 		int pick = new Random().nextInt(Direction.values().length);
 		return Direction.values()[pick];
 	}
