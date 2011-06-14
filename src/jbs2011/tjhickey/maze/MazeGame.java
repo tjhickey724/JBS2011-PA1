@@ -5,6 +5,8 @@ package jbs2011.tjhickey.maze;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.Random;
 
 import jbs2011.taha.maze.AdvancedPlayerByTaha;
 import jbs2011.taha.maze.BasicPlayerByTaha;
@@ -23,9 +25,10 @@ public class MazeGame {
   public HashMap<String,MazePlayer> player;
   public HashMap<String,MazePosition> playerPosition;
   public ArrayList<MazePosition> jewelPosition;
+  public ArrayList<MazePosition> switcherPosition;
   public ArrayList<MazePosition> freeSpace;
   public MazeBoard theBoard;
-  public static boolean debugging = false;
+  public static boolean debugging = true;
   
   /**
    * This creates a maze of the specified size and adds up to 10 jewels to the board.
@@ -36,6 +39,7 @@ public class MazeGame {
 	  player = new HashMap<String,MazePlayer>();
 	  playerPosition = new HashMap<String,MazePosition>();
 	  jewelPosition = new ArrayList<MazePosition>();
+	  switcherPosition = new ArrayList<MazePosition>();
 	  theBoard = new MazeBoard(w,d);
 	  score = new HashMap<String,Integer>();
 	  
@@ -53,13 +57,22 @@ public class MazeGame {
 		  if (debugging) System.out.println("adding a jewel at position "+q);
 		  jewelPosition.add(q);
 	  }
+	  
+	  // (PA2 - EXTENSION) here we add 10 switchers to the board
+	  // switchers are things that when a player lands on them it changes its position with
+	  // another player from the game, chosen randomly.
+	  for (int i=0;i<Math.min(10,w*d);i++){
+		  MazePosition r = getEmptySpace();
+		  if (debugging) System.out.println("adding a switcher at position "+r);
+		  switcherPosition.add(r);
+	  }
 
   }
   
   /**
    * This checks to see if the requested move is valid. If so it moves the player and then 
    * checks to see if there is a jewel on the new position. If so, it adds 5 points to the score
-   * of the player, removes the jewel and places a new jewel on a free space on he board.
+   * of the player, removes the jewel and places a new jewel on a free space on the board.
    * If there is no jewel there, then it adjusts the freeSpace collection appropriately 
    * and returns
    * 
@@ -114,6 +127,37 @@ public class MazeGame {
 		  }
 		  else {
 			  // if no jewel, then remove the space from the freeSpace list
+			  freeSpace.remove(newPos);
+		  }
+		  
+		// (PA2 - EXTENSION) check to see if there is a switcher in the new position.
+		  int j = switcherPosition.indexOf(newPos);
+		  if (j > -1) {
+			  ArrayList <String> randomx = new ArrayList<String>();
+			  Random rand = new Random();
+			  for (String key : playerPosition.keySet()) {
+				  if (key != p.name){
+					  randomx.add(key);
+				  }
+			  }
+			  int index = rand.nextInt(randomx.size());
+			  String otherpl = randomx.get(index);
+			  // switches player's position with another player's position, chosen randomly.
+			  MazePosition copy1 = playerPosition.get(p.name);
+			  MazePosition copy2 = playerPosition.get(otherpl);
+			  playerPosition.put(p.name, copy2);
+			  playerPosition.put(otherpl, copy1);
+			  // remove the switcher
+			  switcherPosition.remove(j);
+			  if (debugging) System.out.println("player lands on a switcher!, position is now " + playerPosition.get(p.name));
+			  // add another switcher
+			  MazePosition s = getEmptySpace();
+			  switcherPosition.add(s);
+			  if (debugging) System.out.println("adding a new switcher at "+ s);
+			  
+		  }
+		  else {
+			  // if no switcher, then remove the space from the freeSpace list
 			  freeSpace.remove(newPos);
 		  }
 		  return true;
@@ -177,7 +221,7 @@ public class MazeGame {
 
 			  for(int i=0;i<steps;i++){
 					if (MazeGame.debugging) System.out.println("\n\n************\nround "+i);
-					if (MazeGame.debugging) System.out.println(g.theBoard.drawBoard(g.playerPosition,g.jewelPosition));
+					if (MazeGame.debugging) System.out.println(g.theBoard.drawBoard(g.playerPosition,g.jewelPosition,g.switcherPosition));
 				    for (MazePlayer p: g.player.values()){
 						  Direction d = p.nextMove(g.playerPosition,g.jewelPosition,g.theBoard);
 						  g.movePlayer(p,d);
@@ -223,7 +267,7 @@ public class MazeGame {
 	 // for(int i=0;i<10;i++) g.addPlayer(new RandomPlayer("newrand"+i));
 	  for (int i=0;i<100;i++){
 		if (g.debugging) System.out.println("\n\n************\nround "+i);
-		if (g.debugging) System.out.println(g.theBoard.drawBoard(g.playerPosition,g.jewelPosition));
+		if (g.debugging) System.out.println(g.theBoard.drawBoard(g.playerPosition,g.jewelPosition,g.switcherPosition));
 	    for (MazePlayer p: g.player.values()){
 		  Direction d = p.nextMove(g.playerPosition,g.jewelPosition,g.theBoard);
 //		  if (g.debugging) System.out.println("Trying to move player "+p.name+" in direction "+d);

@@ -8,9 +8,10 @@ import jbs2011.tjhickey.maze.MazeView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 
 
+//This player looks for the nearest jewel without taking into account the walls on its way. Then it moves
+//towards that jewel trying to pass through walls as many times as needed.
 public class JsouedPlayer2 extends MazePlayer {
 	
 	private String n;
@@ -19,6 +20,8 @@ public class JsouedPlayer2 extends MazePlayer {
 		  ArrayList<MazePlayer> players = new ArrayList<MazePlayer>();
 		  players.add(new jbs2011.jsoued.maze.JsouedPlayer("jsoued1"));
 		  players.add(new jbs2011.jsoued.maze.JsouedPlayer2("jsoued2"));
+		  players.add(new jbs2011.tjhickey.maze.RandomPlayer("Rand"));
+		  players.add(new jbs2011.tjhickey724.maze.TJHplayer("tjhickey"));
 		  jbs2011.tjhickey.maze.MazeGame.playTournament( players);
 	}
 	
@@ -52,70 +55,37 @@ public class JsouedPlayer2 extends MazePlayer {
 			shortest.add(distance);
 		}
 		
-		int shortest2 = shortest.get(0);
+		int shortestx = shortest.get(0);
 		
 		int index = 0;
 		
 		for (int j = 1; j < shortest.size(); j++){
 			
-			if (shortest.get(j) < shortest2){
+			if (shortest.get(j) < shortestx){
 				
-				shortest2 = shortest.get(j);
+				shortestx = shortest.get(j);
 				
 				index = j;
 			}	
 		}
 		
-		if (players.get(n).col == jewels.get(index).col){
+		if (players.get(n).col < jewels.get(index).col){
 			
-			if (players.get(n).row > jewels.get(index).row){
-				
-				return Direction.NORTH;
-		
-			} else {
-				
-				return Direction.SOUTH;
-			} 
+			return Direction.NORTH;
+	
+		} else if (players.get(n).col > jewels.get(index).col){
 			
-		} else if (players.get(n).row == jewels.get(index).row){
-			
-			if (players.get(n).col > jewels.get(index).col){
-				
-				return Direction.WEST;
-		
-			} else {
-				
-				return Direction.EAST;
-			}
+			return Direction.SOUTH;
 			
 		} else {
 			
-			Random rand = new Random();
-			
-			int choice = rand.nextInt(2);
-			
-			if (choice == 0){
+			if (players.get(n).row < jewels.get(index).row){
 				
-				if (players.get(n).col > jewels.get(index).col){
-					
-					return Direction.WEST;
-			
-				} else {
-					
-					return Direction.EAST;
-					
-				}
-				
+				return Direction.EAST;
+		
 			} else {
 				
-				if (players.get(n).row > jewels.get(index).row){
-					
-					return Direction.NORTH;
-			
-				} else {
-					
-					return Direction.SOUTH;
-				}
+				return Direction.WEST;
 			}
 		}
 	}	

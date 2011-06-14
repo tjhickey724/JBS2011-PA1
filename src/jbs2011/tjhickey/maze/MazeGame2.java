@@ -26,6 +26,7 @@ public class MazeGame2 {
   public HashMap<String,MazePlayer> player;
   public HashMap<String,MazePosition> playerPosition;
   public ArrayList<MazePosition> jewelPosition;
+  public ArrayList<MazePosition> switcherPosition;
   public ArrayList<MazePosition> freeSpace;
   public MazeBoard theBoard;
   public HashMap<String, Integer> points;
@@ -189,7 +190,7 @@ public class MazeGame2 {
 
 			  for(int i=0;i<steps;i++){
 					if (MazeGame.debugging) System.out.println("\n\n************\nround "+i);
-					if (MazeGame.debugging) System.out.println(g.theBoard.drawBoard(g.playerPosition,g.jewelPosition));
+					if (MazeGame.debugging) System.out.println(g.theBoard.drawBoard(g.playerPosition,g.jewelPosition,g.switcherPosition));
 				    for (MazePlayer p: g.player.values()){
 						  Direction d = p.nextMove(g.playerPosition,g.jewelPosition,g.theBoard);
 						  g.movePlayer(p,d);
@@ -235,7 +236,7 @@ public class MazeGame2 {
 	 // for(int i=0;i<10;i++) g.addPlayer(new RandomPlayer("newrand"+i));
 	  for (int i=0;i<100;i++){
 		if (g.debugging) System.out.println("\n\n************\nround "+i);
-		if (g.debugging) System.out.println(g.theBoard.drawBoard(g.playerPosition,g.jewelPosition));
+		if (g.debugging) System.out.println(g.theBoard.drawBoard(g.playerPosition,g.jewelPosition,g.switcherPosition));
 	    for (MazePlayer p: g.player.values()){
 		  Direction d = p.nextMove(g.playerPosition,g.jewelPosition,g.theBoard);
 //		  if (g.debugging) System.out.println("Trying to move player "+p.name+" in direction "+d);
